@@ -25,7 +25,8 @@ function readThemeMode(): ThemeMode {
     writeSharedCookie(themeKey, legacy);
     return legacy;
   }
-  return "system";
+  // 视觉规范：默认浅色主题。
+  return "light";
 }
 
 export function useWebsiteTheme() {

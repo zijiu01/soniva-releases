@@ -1,7 +1,7 @@
 export const site = {
   name: "Soniva",
   product: "Soniva 桌面端",
-  description: "Soniva 桌面端的公开发布仓库：下载安装包、查看版本时间线与安装排障文档。",
+  description: "Soniva 桌面端的公开发布仓库：下载安装包、阅读开发日志、版本时间线与安装排障文档。",
   officialUrl: "https://www.soniva.uk",
   appUrl: "https://app.soniva.uk",
   /** GitHub 仓库 slug，形如 "owner/repo"。未配置时页面隐藏相关外链。 */

@@ -1,13 +1,12 @@
-import { DownloadHero } from "@/components/download-hero";
-import { ReleaseTimeline } from "@/components/release-timeline";
-import { getReleases } from "@/lib/content/releases";
+import { DevlogHero } from "@/components/devlog/hero";
+import { TimelineView } from "@/components/devlog/timeline-view";
+import { getTimelineBodies, getTimelineEntries } from "@/lib/content/timeline";
 
 export default function HomePage() {
-  const releases = getReleases();
   return (
     <>
-      <DownloadHero release={releases[0]} />
-      <ReleaseTimeline releases={releases} />
+      <DevlogHero />
+      <TimelineView entries={getTimelineEntries()} bodies={getTimelineBodies()} />
     </>
   );
 }

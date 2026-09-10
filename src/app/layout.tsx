@@ -9,9 +9,9 @@ import { site } from "@/lib/site";
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
-// 首屏前同步主题，避免浅色用户看到深色闪烁。与 Web 营销站同一套 Cookie 键，
-// 因此 www.soniva.uk 与本站的主题选择跨子域保持一致。
-const themeScript = `(function(){try{var m=document.cookie.match(/(?:^|;\\s*)soniva_theme_mode=([^;]*)/);var t=m?decodeURIComponent(m[1]):localStorage.getItem('soniva-releases-theme');var d=t==='dark'||((!t||t==='system')&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);}catch(e){}})();`;
+// 首屏前同步主题，避免闪烁。本站按视觉规范默认浅色；只有用户显式选过深色/系统
+// 才跟随。与 Web 营销站同一套 Cookie 键，跨子域保持一致。
+const themeScript = `(function(){try{var m=document.cookie.match(/(?:^|;\\s*)soniva_theme_mode=([^;]*)/);var t=m?decodeURIComponent(m[1]):localStorage.getItem('soniva-releases-theme');var d=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);}catch(e){}})();`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.officialUrl),

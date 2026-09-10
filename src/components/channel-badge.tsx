@@ -11,8 +11,8 @@ const channelKey: Record<ReleaseChannel, string> = {
 };
 
 const channelClass: Record<ReleaseChannel, string> = {
-  released: "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
-  testing: "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400",
+  released: "border-border bg-muted text-muted-foreground",
+  testing: "border-border bg-muted text-muted-foreground",
   upcoming: "border-border bg-muted text-muted-foreground",
 };
 

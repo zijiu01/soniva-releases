@@ -54,6 +54,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
+  /* shadcn 中性主色：近黑，不抢内容。 */
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
@@ -66,6 +67,10 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
+  /* 频率图专用的蓝色梯度（GitHub contributions 风），仅供数据可视化使用。 */
+  --chart-1: oklch(0.93 0.03 255);
+  --chart-2: oklch(0.78 0.1 255);
+  --chart-3: oklch(0.56 0.19 262);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -89,18 +94,21 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
+  --primary: oklch(0.707 0.165 254.6);
+  --primary-foreground: oklch(0.208 0.042 265.8);
+  --secondary: oklch(0.269 0.014 261.7);
   --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
+  --muted: oklch(0.269 0.014 261.7);
+  --muted-foreground: oklch(0.708 0.017 261.7);
+  --accent: oklch(0.269 0.014 261.7);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.4 0.06 260);
+  --chart-2: oklch(0.55 0.12 258);
+  --chart-3: oklch(0.72 0.15 255);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);

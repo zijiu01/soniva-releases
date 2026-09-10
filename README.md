@@ -35,17 +35,21 @@ Soniva 桌面端的**公开发布仓库**。这里做两件事：
   卡片标题取正文 `# ` 标题，摘要取首个 `##` 之前的首段。
 - `public/docs/<slug>.md`（英文版 `<slug>.en.md`）：安装 / 首启 / 排障 / 更新等文档，
   可选 `order` frontmatter 控制排序。
+- `public/devlog/<slug>.md`：开发日志文档，**照录桌面端仓库的原始 md**（frontmatter 存
+  `date` / `tag` / `source`，正文不改写），按日期倒序展示。
 
-构建期由 `src/lib/content/releases.ts`、`src/lib/content/docs.ts` 读取并生成清单；
-`/releases/<version>`、`/docs/<slug>` 通过 `generateStaticParams` 静态生成。
-新增版本或文档只需新增 md 文件，无需改任何组件。
+构建期由 `src/lib/content/releases.ts`、`src/lib/content/docs.ts`、
+`src/lib/content/devlog.ts` 读取并生成清单；
+`/releases/<version>`、`/docs/<slug>`、`/devlog/<slug>` 通过 `generateStaticParams`
+静态生成。新增版本、文档或日志只需新增 md 文件，无需改任何组件。
 
 ## 路由
 
 | 路径 | 说明 |
 |---|---|
-| `/` | 下载引导 + 滚动发布时间线（卡片点击进入详情） |
+| `/` | DevLog 首页：Hero + 快速定位年历/最新发布包 ｜ 月度分组时间线（发布+文档）｜ 详情面板 |
 | `/releases/<version>` | 单版本详情：下载资产 + 更新说明 |
+| `/devlog/<slug>` | 单篇开发日志 |
 | `/docs` | 安装与排障文档列表 |
 | `/docs/<slug>` | 单篇文档 |
 
@@ -54,6 +58,7 @@ Soniva 桌面端的**公开发布仓库**。这里做两件事：
 ```
 public/releases/   每个版本一个 md（frontmatter + 更新说明正文）
 public/docs/       安装 / 排障等文档 md
+public/devlog/     开发日志手记 md（date / tag frontmatter）
 src/app/           页面与路由（入口只做装配）
 src/components/    UI 组件（ui/ 基础组件，markdown/ 渲染器）
 src/hooks/         主题、语言等浏览器状态
