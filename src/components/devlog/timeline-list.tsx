@@ -92,12 +92,13 @@ function TimelineItem({ entry, dayLabel }: { entry: TimelineEntry; dayLabel: str
                 </span>
               )}
             </div>
-            <h4 className="mt-2.5 text-[17px] font-semibold leading-6 tracking-tight">{title}</h4>
+            <h4 className="mt-2.5 line-clamp-2 text-[17px] font-semibold leading-6 tracking-tight">{title}</h4>
             {summary && <p className="mt-1.5 line-clamp-2 text-sm leading-6 text-muted-foreground">{summary}</p>}
           </div>
+          {/* 缩略图：所有卡片统一 112×80（7:5），缺图回退图标块 */}
           <span
             aria-hidden="true"
-            className="w-28 shrink-0 overflow-hidden rounded-lg border border-border bg-muted/50"
+            className="h-20 w-28 shrink-0 self-center overflow-hidden rounded-lg border border-border bg-muted/50"
           >
             {entry.image ? (
               // eslint-disable-next-line @next/next/no-img-element
