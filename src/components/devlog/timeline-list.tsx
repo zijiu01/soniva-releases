@@ -71,7 +71,7 @@ function TimelineItem({ entry, dayLabel }: { entry: TimelineEntry; dayLabel: str
         rel="noopener noreferrer"
         className="group mt-2 block scroll-mt-28 rounded-xl border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/25 hover:shadow-sm sm:p-5"
       >
-        <div className="flex items-start gap-4">
+        <div className="flex items-stretch gap-4">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               {tag && (
@@ -97,7 +97,7 @@ function TimelineItem({ entry, dayLabel }: { entry: TimelineEntry; dayLabel: str
           </div>
           <span
             aria-hidden="true"
-            className="h-12 w-16 shrink-0 overflow-hidden rounded-lg border border-border bg-muted/50"
+            className="w-28 shrink-0 overflow-hidden rounded-lg border border-border bg-muted/50"
           >
             {entry.image ? (
               // eslint-disable-next-line @next/next/no-img-element
