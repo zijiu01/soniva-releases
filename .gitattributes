@@ -1,2 +1,20 @@
-# Auto detect text files and perform LF normalization
+# 自动识别文本文件并统一换行为 LF
 * text=auto
+
+# 二进制类型兜底标记，避免 diff/merge 误处理
+# （按仓库规范这些产物不得提交，仅作保险）
+*.dmg   binary
+*.pkg   binary
+*.zip   binary
+*.exe   binary
+*.icns  binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.otf   binary
