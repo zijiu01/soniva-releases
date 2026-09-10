@@ -97,9 +97,16 @@ function TimelineItem({ entry, dayLabel }: { entry: TimelineEntry; dayLabel: str
           </div>
           <span
             aria-hidden="true"
-            className="grid h-12 w-16 shrink-0 place-items-center rounded-lg border border-border bg-muted/50 text-muted-foreground"
+            className="h-12 w-16 shrink-0 overflow-hidden rounded-lg border border-border bg-muted/50"
           >
-            {entry.kind === "release" ? <Package className="size-5" /> : <FileText className="size-5" />}
+            {entry.image ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={entry.image} alt="" loading="lazy" className="h-full w-full object-cover" />
+            ) : (
+              <span className="grid h-full w-full place-items-center text-muted-foreground">
+                {entry.kind === "release" ? <Package className="size-5" /> : <FileText className="size-5" />}
+              </span>
+            )}
           </span>
         </div>
       </a>

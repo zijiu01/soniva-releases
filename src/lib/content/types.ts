@@ -64,4 +64,6 @@ export interface TimelineEntry {
   size?: string | null;
   downloadAvailable?: boolean;
   source?: string | null;
+  /** 卡片缩略图（本地占位示意图路径），空则回退为图标块。 */
+  image?: string | null;
 }
