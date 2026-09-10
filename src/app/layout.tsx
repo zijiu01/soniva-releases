@@ -1,8 +1,17 @@
 import type { Metadata, Viewport } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { WebsiteFooter } from "@/components/website-footer";
+import { WebsiteHeader } from "@/components/website-header";
+import { WebsiteLocaleProvider } from "@/hooks/use-website-locale";
 import { site } from "@/lib/site";
 
-const themeScript = `(function(){try{var t=localStorage.getItem('soniva-theme');if(t!=='light'&&t!=='dark'){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`;
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+
+// 首屏前同步主题，避免浅色用户看到深色闪烁。与 Web 营销站同一套 Cookie 键，
+// 因此 www.soniva.uk 与本站的主题选择跨子域保持一致。
+const themeScript = `(function(){try{var m=document.cookie.match(/(?:^|;\\s*)soniva_theme_mode=([^;]*)/);var t=m?decodeURIComponent(m[1]):localStorage.getItem('soniva-releases-theme');var d=t==='dark'||((!t||t==='system')&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);}catch(e){}})();`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.officialUrl),
@@ -11,7 +20,7 @@ export const metadata: Metadata = {
     template: `%s · ${site.name}`,
   },
   description: site.description,
-  keywords: ["Soniva", "桌面端", "下载", "发布记录", "语音合成"],
+  keywords: ["Soniva", "桌面端", "下载", "发布记录", "版本时间线"],
   openGraph: {
     type: "website",
     title: `${site.product} · 发布版本记录`,
@@ -23,21 +32,32 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fdfdfd" },
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
     { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
   ],
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="zh-CN" data-theme="dark" suppressHydrationWarning>
+    <html
+      lang="zh-CN"
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="page-glow min-h-screen antialiased">{children}</body>
+      <body className="flex min-h-dvh flex-col">
+        <WebsiteLocaleProvider initialLocale="zh-CN">
+          <WebsiteHeader />
+          <main className="flex-1">{children}</main>
+          <WebsiteFooter />
+        </WebsiteLocaleProvider>
+      </body>
     </html>
   );
 }

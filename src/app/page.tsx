@@ -1,25 +1,13 @@
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
-import { Hero } from "@/components/hero";
-import { FeatureGrid } from "@/components/feature-grid";
-import { PipelineStatus } from "@/components/pipeline-status";
-import { DownloadPanel } from "@/components/download-panel";
+import { DownloadHero } from "@/components/download-hero";
 import { ReleaseTimeline } from "@/components/release-timeline";
-import { Faq } from "@/components/faq";
+import { getReleases } from "@/lib/content/releases";
 
 export default function HomePage() {
+  const releases = getReleases();
   return (
     <>
-      <SiteHeader />
-      <main>
-        <Hero />
-        <FeatureGrid />
-        <PipelineStatus />
-        <DownloadPanel />
-        <ReleaseTimeline />
-        <Faq />
-      </main>
-      <SiteFooter />
+      <DownloadHero release={releases[0]} />
+      <ReleaseTimeline releases={releases} />
     </>
   );
 }
