@@ -4,6 +4,9 @@ order: 3
 
 # Troubleshooting
 
+Common issues around downloading, installing and first launch are collected
+here — work through the entries below when something looks off.
+
 ## macOS says the app is damaged or cannot be verified
 
 First make sure the download is complete and came from this repository's

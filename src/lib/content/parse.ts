@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import matter from "gray-matter";
+import { stripEmojiNoise } from "@/lib/markdown";
 
 export type ParsedMarkdown = { data: Record<string, unknown>; content: string };
 
@@ -13,7 +14,7 @@ export function parseMarkdownFile(filePath: string): ParsedMarkdown {
 
 /** 标题优先取正文的 `# ` 一级标题；摘要取第一个 `##` 之前的首段正文（可含引用块）。 */
 export function extractTitleAndSummary(markdown: string): { title: string; summary: string } {
-  const lines = markdown.replace(/\r/g, "").split("\n");
+  const lines = stripEmojiNoise(markdown.replace(/\r/g, "")).split("\n");
   const titleIndex = lines.findIndex((line) => line.startsWith("# "));
   const title = titleIndex >= 0 ? lines[titleIndex].slice(2).trim() : "";
   const firstHeadingIndex = lines.findIndex((line, index) => index > titleIndex && /^#{2,6} /.test(line));

@@ -5,7 +5,10 @@ import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { slugifyHeading } from "@/lib/slugify";
 
+import { stripEmojiNoise } from "@/lib/markdown";
+
 export function MarkdownContent({ markdown }: { markdown: string }) {
+  const clean = stripEmojiNoise(markdown);
   const components: Components = {
     h2: ({ children }) => (
       <h2 id={slugifyHeading(flattenText(children))} className="mt-12 scroll-mt-28 text-2xl font-semibold tracking-tight first:mt-0">
@@ -69,7 +72,7 @@ export function MarkdownContent({ markdown }: { markdown: string }) {
 
   return (
     <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
-      {markdown}
+      {clean}
     </ReactMarkdown>
   );
 }

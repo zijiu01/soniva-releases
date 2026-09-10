@@ -1,5 +1,13 @@
 import { slugifyHeading } from "@/lib/slugify";
 
+/** 照录文档里的状态 emoji（✅❌⚠️🚨 等）在界面上显得杂乱，展示层统一滤掉。 */
+const EMOJI_NOISE =
+  /[\u2705\u274C\u26A0\uFE0F\u2714\u2611\u{1F6A8}\u{1F7E1}\u{1F534}\u{1F7E2}\u{27A1}\uFE0F]/gu;
+
+export function stripEmojiNoise(markdown: string): string {
+  return markdown.replace(EMOJI_NOISE, "");
+}
+
 /** 去掉正文开头的 `# 标题` 行——标题由页面单独渲染，避免正文里重复一个 H1。 */
 export function stripLeadingTitle(markdown: string): string {
   const lines = markdown.replace(/\r/g, "").split("\n");
