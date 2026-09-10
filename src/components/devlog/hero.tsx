@@ -9,7 +9,7 @@ export function DevlogHero() {
   const t = useT(siteCopy);
   return (
     <section className="border-b border-border bg-background">
-      <div className="mx-auto max-w-none px-5 sm:px-8">
+      <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <div className="grid items-center gap-10 py-16 lg:grid-cols-[minmax(0,11fr)_minmax(0,9fr)]">
           <div>
             <span className="inline-flex items-center rounded-full border border-border bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
