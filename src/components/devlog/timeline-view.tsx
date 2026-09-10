@@ -34,7 +34,7 @@ export function TimelineView({ entries }: Props) {
 
   return (
     <section className="marketing-grid-frame mx-auto max-w-none px-5 sm:px-8">
-      <div className="section-pad-sm grid items-start gap-8 lg:grid-cols-[260px_minmax(0,1fr)]">
+      <div className="section-pad-sm grid items-start gap-8 lg:grid-cols-3">
         <div className="space-y-5 lg:sticky lg:top-20">
           <div className="relative">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
