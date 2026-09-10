@@ -9,12 +9,10 @@ import type { TimelineEntry } from "@/lib/content/types";
 type Props = {
   entries: TimelineEntry[];
   emptyLabel: string;
-  selectedId: string | null;
-  onSelect: (entry: TimelineEntry) => void;
 };
 
-/** 核心时间线：一条从头贯到尾的连接线（年月之间不断开），月度分组，卡片沿 rail 排列。 */
-export function TimelineList({ entries, emptyLabel, selectedId, onSelect }: Props) {
+/** 核心时间线：一条贯穿的连接线，月度分组；整卡为新标签页链接。 */
+export function TimelineList({ entries, emptyLabel }: Props) {
   const t = useT(siteCopy);
   const { locale } = useWebsiteLocale();
   const dateLocale = locale === "en-US" ? "en-US" : "zh-CN";
@@ -41,8 +39,6 @@ export function TimelineList({ entries, emptyLabel, selectedId, onSelect }: Prop
                 key={entry.id}
                 entry={entry}
                 dayLabel={entry.date ? dayLabel(entry.date, dateLocale) : t("releaseNotPublished")}
-                selected={entry.id === selectedId}
-                onSelect={onSelect}
               />
             ))}
           </ol>
@@ -53,17 +49,7 @@ export function TimelineList({ entries, emptyLabel, selectedId, onSelect }: Prop
   );
 }
 
-function TimelineItem({
-  entry,
-  dayLabel,
-  selected,
-  onSelect,
-}: {
-  entry: TimelineEntry;
-  dayLabel: string;
-  selected: boolean;
-  onSelect: (entry: TimelineEntry) => void;
-}) {
+function TimelineItem({ entry, dayLabel }: { entry: TimelineEntry; dayLabel: string }) {
   const t = useT(siteCopy);
   const { locale } = useWebsiteLocale();
   const title = locale === "zh-CN" ? entry.titleZh : entry.titleEn;
@@ -75,19 +61,15 @@ function TimelineItem({
       {/* 节点圆点：实色，11px 居中压在 left 5px 的 1px 连接线上 */}
       <span
         aria-hidden="true"
-        className={`absolute left-0 top-1.5 size-[11px] rounded-full transition-colors ${
-          selected ? "bg-foreground" : "bg-muted-foreground"
-        }`}
+        className="absolute left-0 top-1.5 size-[11px] rounded-full bg-muted-foreground"
       />
       <p className="font-mono text-xs text-muted-foreground">{dayLabel}</p>
-      <article
+      <a
         id={`tl-${entry.id}`}
-        onClick={() => onSelect(entry)}
-        className={`group mt-2 scroll-mt-28 cursor-pointer rounded-xl border bg-card p-4 transition-all duration-200 sm:p-5 ${
-          selected
-            ? "border-foreground/60 shadow-sm"
-            : "border-border hover:-translate-y-0.5 hover:border-foreground/25 hover:shadow-sm"
-        }`}
+        href={entry.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group mt-2 block scroll-mt-28 rounded-xl border bg-card p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/25 hover:shadow-sm sm:p-5"
       >
         <div className="flex items-start gap-4">
           <div className="min-w-0 flex-1">
@@ -113,16 +95,14 @@ function TimelineItem({
             <h4 className="mt-2.5 text-[17px] font-semibold leading-6 tracking-tight">{title}</h4>
             {summary && <p className="mt-1.5 line-clamp-2 text-sm leading-6 text-muted-foreground">{summary}</p>}
           </div>
-          <div className="flex shrink-0 flex-col items-end">
-            <span
-              aria-hidden="true"
-              className="grid h-12 w-16 place-items-center rounded-lg border border-border bg-muted/50 text-muted-foreground"
-            >
-              {entry.kind === "release" ? <Package className="size-5" /> : <FileText className="size-5" />}
-            </span>
-          </div>
+          <span
+            aria-hidden="true"
+            className="grid h-12 w-16 shrink-0 place-items-center rounded-lg border border-border bg-muted/50 text-muted-foreground"
+          >
+            {entry.kind === "release" ? <Package className="size-5" /> : <FileText className="size-5" />}
+          </span>
         </div>
-      </article>
+      </a>
     </li>
   );
 }

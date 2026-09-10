@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import { DetailPanel } from "@/components/devlog/detail-panel";
 import { PackageList } from "@/components/devlog/package-list";
 import { TimelineList } from "@/components/devlog/timeline-list";
 import { YearHeatmap } from "@/components/devlog/year-heatmap";
@@ -10,34 +9,16 @@ import { Input } from "@/components/ui/input";
 import { siteCopy, useT } from "@/lib/i18n";
 import type { TimelineEntry } from "@/lib/content/types";
 
-type Bodies = Record<string, Record<"zh-CN" | "en-US", string>>;
+type Props = { entries: TimelineEntry[] };
 
-type Props = {
-  entries: TimelineEntry[];
-  bodies: Bodies;
-};
-
-/** 核心三栏：快速定位 + 最新发布包 ｜ 月度分组时间线 ｜ 详情阅读区。
- *  点卡片 → 卡片滚到视口顶部，右栏 sticky 面板与其对齐，持续可读。 */
-export function TimelineView({ entries, bodies }: Props) {
+/** 两栏布局：快速定位 + 最新发布包 ｜ 月度分组时间线。
+ *  卡片与日期方块点击后在新标签页打开对应详情页。 */
+export function TimelineView({ entries }: Props) {
   const t = useT(siteCopy);
-  const [selectedId, setSelectedId] = useState(entries[0]?.id ?? null);
   const [query, setQuery] = useState("");
-  const selected = entries.find((entry) => entry.id === selectedId) ?? entries[0] ?? null;
 
-  const select = (entry: TimelineEntry) => {
-    setSelectedId(entry.id);
-    // 窄屏没有右栏阅读区，点击进该条目指向的详情页。
-    if (typeof window !== "undefined" && !window.matchMedia("(min-width: 1280px)").matches) {
-      window.location.href = entry.href;
-    }
-    // 宽屏只切换右栏预览，不自动滚动页面。
-  };
-
-  const scrollToEntry = (entry: TimelineEntry) => {
-    select(entry);
-    // 频率图点击：滚动中间栏让对应卡片进入视野（即时滚动，smooth 会被部分环境丢弃）
-    document.getElementById(`tl-${entry.id}`)?.scrollIntoView({ block: "center" });
+  const openEntry = (entry: TimelineEntry) => {
+    window.open(entry.href, "_blank", "noopener,noreferrer");
   };
 
   const filtered = useMemo(() => {
@@ -53,7 +34,7 @@ export function TimelineView({ entries, bodies }: Props) {
 
   return (
     <section className="marketing-grid-frame mx-auto max-w-none px-5 sm:px-8">
-      <div className="section-pad-sm grid items-start gap-8 lg:grid-cols-[260px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,7fr)_minmax(0,16fr)]">
+      <div className="section-pad-sm grid items-start gap-8 lg:grid-cols-[260px_minmax(0,1fr)]">
         <div className="space-y-5 lg:sticky lg:top-20">
           <div className="relative">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -65,23 +46,12 @@ export function TimelineView({ entries, bodies }: Props) {
               className="pl-9"
             />
           </div>
-          <YearHeatmap entries={entries} onSelect={scrollToEntry} />
+          <YearHeatmap entries={entries} onSelect={openEntry} />
           <PackageList entries={entries} />
         </div>
 
         <div id="timeline" className="scroll-mt-24">
-          <TimelineList
-            entries={filtered}
-            emptyLabel={query.trim() ? t("searchEmpty") : t("homeEmpty")}
-            selectedId={selected?.id ?? null}
-            onSelect={select}
-          />
-        </div>
-
-        <div className="hidden xl:block xl:self-stretch">
-          <div className="xl:sticky xl:top-20 xl:max-h-[calc(100dvh-6rem)] xl:overflow-y-auto xl:overscroll-contain xl:pr-0.5">
-            <DetailPanel entry={selected} entries={entries} bodies={bodies} onSelect={select} />
-          </div>
+          <TimelineList entries={filtered} emptyLabel={query.trim() ? t("searchEmpty") : t("homeEmpty")} />
         </div>
       </div>
     </section>

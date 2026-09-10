@@ -20,7 +20,7 @@ export function PackageList({ entries }: { entries: TimelineEntry[] }) {
         <ul className="mt-2 divide-y divide-border">
           {releases.map((release) => (
             <li key={release.id} className="flex items-center gap-2 py-2.5">
-              <Link href={release.href} className="min-w-0 flex-1">
+              <Link href={release.href} target="_blank" className="min-w-0 flex-1">
                 <p className="font-mono text-sm font-medium">v{release.version}</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
                   {release.date ?? t("releaseNotPublished")}
@@ -29,6 +29,7 @@ export function PackageList({ entries }: { entries: TimelineEntry[] }) {
               {release.downloadAvailable ? (
                 <Link
                   href={release.href}
+                  target="_blank"
                   aria-label={t("heroDownload")}
                   className={buttonVariants({ variant: "ghost", size: "icon-sm" })}
                 >
