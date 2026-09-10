@@ -30,11 +30,8 @@ export function TimelineView({ entries, bodies }: Props) {
     // 窄屏没有右栏阅读区，点击进该条目指向的详情页。
     if (typeof window !== "undefined" && !window.matchMedia("(min-width: 1280px)").matches) {
       window.location.href = entry.href;
-      return;
     }
-    // 宽屏：卡片顶部对齐视口顶部，右侧面板与其并排。
-    // 注意用即时滚动——smooth 在部分内嵌浏览器会被静默丢弃。
-    document.getElementById(`tl-${entry.id}`)?.scrollIntoView({ block: "start" });
+    // 宽屏只切换右栏预览，不自动滚动页面。
   };
 
   const scrollToEntry = (entry: TimelineEntry) => {
@@ -54,7 +51,7 @@ export function TimelineView({ entries, bodies }: Props) {
 
   return (
     <section className="marketing-grid-frame mx-auto max-w-none px-5 sm:px-8">
-      <div className="section-pad-sm grid items-start gap-8 lg:grid-cols-[260px_minmax(0,1fr)] xl:grid-cols-[270px_minmax(0,10fr)_minmax(0,13fr)]">
+      <div className="section-pad-sm grid items-start gap-8 lg:grid-cols-[260px_minmax(0,1fr)] xl:grid-cols-[270px_minmax(0,8fr)_minmax(0,15fr)]">
         <div className="space-y-5 lg:sticky lg:top-20">
           <div className="relative">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />

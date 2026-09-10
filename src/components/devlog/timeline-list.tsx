@@ -32,7 +32,9 @@ export function TimelineList({ entries, emptyLabel, selectedId, onSelect }: Prop
           <h3 className="text-lg font-semibold tracking-tight">
             {group.key === "latest" ? t("timelineLatest") : group.label}
           </h3>
-          <ol className="mt-5 space-y-6">
+          <ol className="relative mt-5 space-y-6">
+            {/* 连接线：贯穿整月分组，压在圆点中心 */}
+            <span aria-hidden className="absolute bottom-3 left-[5px] top-3 w-px bg-border" />
             {group.entries.map((entry) => (
               <TimelineItem
                 key={entry.id}
@@ -68,7 +70,14 @@ function TimelineItem({
   const tag = entry.kind === "release" ? t("releaseTag") : locale === "zh-CN" ? entry.tagZh : entry.tagEn;
 
   return (
-    <li>
+    <li className="relative pl-7">
+      {/* 节点圆点：精确压在连接线上，选中加深 */}
+      <span
+        aria-hidden="true"
+        className={`absolute left-0 top-1.5 size-2.5 rounded-full border-2 border-background transition-colors ${
+          selected ? "bg-foreground" : "bg-muted-foreground/40"
+        }`}
+      />
       <p className="font-mono text-xs text-muted-foreground">{dayLabel}</p>
       <article
         id={`tl-${entry.id}`}
