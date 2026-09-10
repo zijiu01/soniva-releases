@@ -1,135 +1,258 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-/* 主题切换：与 Soniva 主产品一致，通过 <html data-theme="dark|light"> 控制。
-   Tailwind 4 需要显式声明 dark 变体，默认的 `prefers-color-scheme` 不适用。 */
-@custom-variant dark (&:is([data-theme="dark"] *));
-
-@layer base {
-  :root,
-  [data-theme="light"] {
-    --background: oklch(0.99 0 0);
-    --foreground: oklch(0.16 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.16 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.16 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.5 0 0);
-    --accent: oklch(0.96 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.9 0 0);
-    --input: oklch(0.92 0 0);
-    --ring: oklch(0.7 0 0);
-    --radius: 0.75rem;
-  }
-
-  [data-theme="dark"] {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.985 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 12%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-  }
-}
+/* 主题切换与 Web 营销站一致：由 <html class="dark"> 控制。 */
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-html {
-  color-scheme: light;
-  scroll-behavior: smooth;
-  /* 背景放在 html 上，body 保持透明，顶部的 page-glow 才能透出来 */
-  background-color: var(--background);
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
 }
 
-html[data-theme="dark"] {
-  color-scheme: dark;
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
 }
 
-body {
-  background-color: transparent;
-  color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-    "Hiragino Sans GB", "Microsoft YaHei", Roboto, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+:root {
+  --sat: env(safe-area-inset-top, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
 }
 
-::selection {
-  background: color-mix(in oklch, var(--foreground) 18%, transparent);
-}
-
-/* 背景装饰：顶部径向光晕，避免大面积纯色显得单调 */
-.page-glow::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(60rem 32rem at 50% -12%, color-mix(in oklch, var(--foreground) 7%, transparent), transparent 70%);
-}
-
-@keyframes rise-in {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    -webkit-tap-highlight-color: transparent;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.rise-in {
-  animation: rise-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
   html {
-    scroll-behavior: auto;
+    @apply font-sans;
+    color-scheme: light;
   }
-  .rise-in {
-    animation: none;
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Soniva 品牌标识的描边动效（与 Web 营销站一致）。 */
+.soniva-logo-wave {
+  stroke-dasharray: 47;
+  stroke-dashoffset: 47;
+  opacity: 0;
+}
+.soniva-brand:hover .soniva-logo-mark[data-animated="true"] .soniva-logo-static {
+  opacity: 0;
+}
+.soniva-brand:hover .soniva-logo-mark[data-animated="true"] .soniva-logo-motion {
+  opacity: 1;
+}
+.soniva-brand:hover .soniva-logo-mark[data-animated="true"] .soniva-logo-mouth {
+  stroke-dasharray: 95;
+  stroke-dashoffset: 95;
+  animation: soniva-logo-draw 1.2s cubic-bezier(0.45, 0.05, 0.25, 1) forwards;
+}
+.soniva-brand:hover .soniva-logo-mark[data-animated="true"] .soniva-logo-wave {
+  animation: soniva-logo-wave 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.5s infinite;
+}
+
+@keyframes soniva-logo-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes soniva-logo-wave {
+  0% {
+    stroke-dashoffset: 47;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  45%,
+  55% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  95% {
+    stroke-dashoffset: -47;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: -47;
+    opacity: 0;
+  }
+}
+
+/* 带上下端点装饰的竖线框架，用于内容区块。 */
+.marketing-grid-frame {
+  --marketing-grid-surface: var(--background);
+  position: relative;
+  border-inline: 1px solid var(--border);
+}
+.marketing-grid-frame::before,
+.marketing-grid-frame::after {
+  position: absolute;
+  z-index: 10;
+  left: -7px;
+  right: -7px;
+  height: 14px;
+  pointer-events: none;
+  content: "";
+  background:
+    radial-gradient(circle, var(--foreground) 0 1px, transparent 1.1px) left 6px center / 2px 2px no-repeat,
+    radial-gradient(circle, var(--foreground) 0 1px, transparent 1.1px) right 6px center / 2px 2px no-repeat,
+    linear-gradient(var(--marketing-grid-surface), var(--marketing-grid-surface)) left center / 14px 14px no-repeat,
+    linear-gradient(var(--marketing-grid-surface), var(--marketing-grid-surface)) right center / 14px 14px no-repeat;
+}
+.marketing-grid-frame::before {
+  top: -7px;
+}
+.marketing-grid-frame::after {
+  bottom: -7px;
+}
+.marketing-footer-frame {
+  border-inline: 0;
+}
+.marketing-footer-frame::before,
+.marketing-footer-frame::after {
+  display: none;
+}
+
+/* 三档区块垂直节奏。手机 → 平板 → 桌面逐档放大。 */
+.section-pad-sm {
+  padding-block: 3rem;
+}
+.section-pad {
+  padding-block: 4rem;
+}
+.section-pad-lg {
+  padding-block: 5rem;
+}
+
+@media (min-width: 768px) {
+  .section-pad-sm {
+    padding-block: 4rem;
+  }
+  .section-pad {
+    padding-block: 6rem;
+  }
+  .section-pad-lg {
+    padding-block: 8rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .marketing-grid-frame {
+    border-inline: 0;
+  }
+  .marketing-grid-frame::before,
+  .marketing-grid-frame::after {
+    display: none;
   }
 }

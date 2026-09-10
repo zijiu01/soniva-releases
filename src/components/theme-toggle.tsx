@@ -1,38 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { RiMoonLine, RiSunLine } from "@remixicon/react";
+import { useState } from "react";
+import { AnimatedLucide } from "@/components/animate-ui/icons/animated-lucide";
 import { Button } from "@/components/ui/button";
+import { useWebsiteTheme } from "@/hooks/use-website-theme";
 
-type Theme = "dark" | "light";
-
-export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("dark");
-
-  useEffect(() => {
-    const current = document.documentElement.getAttribute("data-theme");
-    setTheme(current === "light" ? "light" : "dark");
-  }, []);
-
-  function toggle() {
-    const next: Theme = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    document.documentElement.setAttribute("data-theme", next);
-    try {
-      localStorage.setItem("soniva-theme", next);
-    } catch {
-      /* 隐私模式下 localStorage 可能不可用，忽略即可 */
-    }
-  }
-
+export function ThemeToggle({ size = "icon-lg" }: { size?: "icon-sm" | "icon-lg" } = {}) {
+  const { mode, toggleTheme } = useWebsiteTheme();
+  const [animationId, setAnimationId] = useState(0);
+  const next = mode === "light" ? "dark" : mode === "dark" ? "system" : "light";
+  const label = next === "light" ? "切换至浅色主题" : next === "dark" ? "切换至深色主题" : "切换至跟随系统主题";
+  const icon = mode === "light" ? "Sun" : mode === "dark" ? "Moon" : "SunMoon";
   return (
     <Button
+      type="button"
       variant="ghost"
-      size="icon"
-      onClick={toggle}
-      aria-label={theme === "dark" ? "切换到浅色模式" : "切换到深色模式"}
+      size={size}
+      onClick={() => {
+        setAnimationId((id) => id + 1);
+        toggleTheme();
+      }}
+      aria-label={label}
+      title={label}
+      className="text-muted-foreground"
     >
-      {theme === "dark" ? <RiSunLine /> : <RiMoonLine />}
+      <AnimatedLucide key={animationId} name={icon} className="size-3.5" animate={animationId > 0} animateOnHover initialOnAnimateEnd />
     </Button>
   );
 }
