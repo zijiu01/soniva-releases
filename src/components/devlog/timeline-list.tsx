@@ -58,10 +58,10 @@ function TimelineItem({ entry, dayLabel }: { entry: TimelineEntry; dayLabel: str
 
   return (
     <li className="relative pl-7">
-      {/* 节点圆点：实色，11px 居中压在 left 5px 的 1px 连接线上 */}
+      {/* 节点圆点：白底描边，11px 居中压在 left 5px 的 1px 连接线上 */}
       <span
         aria-hidden="true"
-        className="absolute left-0 top-1.5 size-[11px] rounded-full bg-muted-foreground"
+        className="absolute left-0 top-1.5 size-[11px] rounded-full border-2 border-muted-foreground bg-background"
       />
       <p className="font-mono text-xs text-muted-foreground">{dayLabel}</p>
       <a
