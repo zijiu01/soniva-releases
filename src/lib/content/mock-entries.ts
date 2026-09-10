@@ -43,18 +43,30 @@ export function buildMockEntries(): TimelineEntry[] {
   return entries;
 }
 
-/** 每月 0~4 条：确定性伪随机铺日期，尽量不重复同一天（同天多条可展示深蓝色）。 */
+/** 每月 0~6 条：确定性伪随机。忙碌月产 4~6 条且允许同日聚簇（35% 概率），
+ *  从而出现 GitHub 梯度里的中蓝/深蓝档；清闲月 0~1 条。 */
 function monthSlots(year: number, month: number): { day: number; index: number }[] {
   const r = rand01(`${year}-${month}:count`);
-  const count = r < 0.2 ? 0 : r < 0.5 ? 1 : r < 0.78 ? 2 : r < 0.93 ? 3 : 4;
-  const taken = new Set<number>();
+  const count = r < 0.08 ? 0 : r < 0.26 ? 1 : r < 0.46 ? 2 : r < 0.68 ? 3 : r < 0.84 ? 4 : r < 0.95 ? 5 : 6;
+  const days: number[] = [];
   const slots: { day: number; index: number }[] = [];
   for (let i = 0; i < count; i += 1) {
-    let day = 1 + Math.floor(rand01(`${year}-${month}-${i}:day`) * 28);
-    for (let attempt = 0; taken.has(day) && attempt < 28; attempt += 1) {
-      day = (day % 28) + 1;
+    let day: number;
+    if (count >= 5 && i >= 1 && i <= 2) {
+      // 忙碌月强制一个「赶工日」：同一天压 3 条，出现最深蓝档
+      day = days[0];
+    } else if (i > 0 && rand01(`${year}-${month}-${i}:cluster`) < 0.35) {
+      // 聚簇：贴着上一条的同一天或相邻天，形成「赶工」的深色块
+      const prev = days[days.length - 1];
+      day = rand01(`${year}-${month}-${i}:same`) < 0.5 ? prev : (prev % 28) + 1;
+    } else {
+      day = 1 + Math.floor(rand01(`${year}-${month}-${i}:day`) * 28);
+      let guard = 0;
+      while (days.includes(day) && guard++ < 28) {
+        day = (day % 28) + 1;
+      }
     }
-    taken.add(day);
+    days.push(day);
     slots.push({ day, index: monthIndex(year, month, i) });
   }
   return slots;

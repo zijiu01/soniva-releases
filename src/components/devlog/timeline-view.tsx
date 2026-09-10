@@ -51,7 +51,7 @@ export function TimelineView({ entries, bodies }: Props) {
 
   return (
     <section className="marketing-grid-frame mx-auto max-w-none px-5 sm:px-8">
-      <div className="section-pad-sm grid items-start gap-8 lg:grid-cols-[260px_minmax(0,1fr)] xl:grid-cols-[270px_minmax(0,8fr)_minmax(0,15fr)]">
+      <div className="section-pad-sm grid items-start gap-8 lg:grid-cols-[260px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,7fr)_minmax(0,16fr)]">
         <div className="space-y-5 lg:sticky lg:top-20">
           <div className="relative">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -77,7 +77,7 @@ export function TimelineView({ entries, bodies }: Props) {
         </div>
 
         <div className="hidden xl:block xl:self-stretch">
-          <div className="xl:sticky xl:top-20 xl:max-h-[calc(100dvh-6rem)] xl:overflow-y-auto xl:pr-0.5">
+          <div className="xl:sticky xl:top-20 xl:max-h-[calc(100dvh-6rem)] xl:overflow-y-auto xl:overscroll-contain xl:pr-0.5">
             <DetailPanel entry={selected} entries={entries} bodies={bodies} onSelect={select} />
           </div>
         </div>

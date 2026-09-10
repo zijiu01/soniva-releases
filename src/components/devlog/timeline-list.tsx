@@ -13,7 +13,7 @@ type Props = {
   onSelect: (entry: TimelineEntry) => void;
 };
 
-/** 核心时间线：细蓝竖线 + 日期节点 + 日志卡片，月度分组，持续向下阅读。 */
+/** 核心时间线：一条从头贯到尾的连接线（年月之间不断开），月度分组，卡片沿 rail 排列。 */
 export function TimelineList({ entries, emptyLabel, selectedId, onSelect }: Props) {
   const t = useT(siteCopy);
   const { locale } = useWebsiteLocale();
@@ -21,20 +21,21 @@ export function TimelineList({ entries, emptyLabel, selectedId, onSelect }: Prop
   const groups = groupByMonth(entries, dateLocale);
 
   return (
-    <div>
+    <div className="relative">
       <h2 className="sr-only">{t("devlogTitle")}</h2>
+      {/* 连接线：整条时间线从头贯到尾，不因年月分组断开 */}
+      <span aria-hidden="true" className="absolute bottom-2 left-[5px] top-2 w-px bg-border" />
+
       {groups.map((group) => (
         <div
           key={group.key}
           id={group.key === "latest" ? "month-latest" : `month-${group.key}`}
           className="mb-10 scroll-mt-24 last:mb-0"
         >
-          <h3 className="text-lg font-semibold tracking-tight">
+          <h3 className="pl-7 text-lg font-semibold tracking-tight">
             {group.key === "latest" ? t("timelineLatest") : group.label}
           </h3>
-          <ol className="relative mt-5 space-y-6">
-            {/* 连接线：贯穿整月分组，压在圆点中心 */}
-            <span aria-hidden className="absolute bottom-3 left-[5px] top-3 w-px bg-border" />
+          <ol className="mt-5 space-y-6">
             {group.entries.map((entry) => (
               <TimelineItem
                 key={entry.id}
@@ -71,11 +72,11 @@ function TimelineItem({
 
   return (
     <li className="relative pl-7">
-      {/* 节点圆点：精确压在连接线上，选中加深 */}
+      {/* 节点圆点：实色，11px 居中压在 left 5px 的 1px 连接线上 */}
       <span
         aria-hidden="true"
-        className={`absolute left-0 top-1.5 size-2.5 rounded-full border-2 border-background transition-colors ${
-          selected ? "bg-foreground" : "bg-muted-foreground/40"
+        className={`absolute left-0 top-1.5 size-[11px] rounded-full transition-colors ${
+          selected ? "bg-foreground" : "bg-muted-foreground"
         }`}
       />
       <p className="font-mono text-xs text-muted-foreground">{dayLabel}</p>
