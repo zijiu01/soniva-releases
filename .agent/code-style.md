@@ -6,9 +6,10 @@
 
 - **文件行数限制**：单个源码文件（`.tsx` / `.ts` / `.css`）**建议 150~200 行，硬性上限严禁超过 300 行**。
 - **主动拆分策略**：
-  - 发布记录、特性清单、FAQ 等静态数据 ── 强制抽离至 `src/lib/` 或 `src/data/`。
+  - 发布记录与文档内容 ── 一律放 `public/releases/`、`public/docs/` 的 Markdown
+    （frontmatter 存元数据，正文写内容），组件只负责渲染，**禁止在 TS 里写死文案**。
   - 卡片、时间线条目、下载按钮等可复用 UI ── 拆成独立组件。
-  - 主题切换、数据抓取等逻辑 ── 抽为 Hook 或 `src/lib/` 纯函数。
+  - 主题切换、语言、内容读取等逻辑 ── 抽为 Hook 或 `src/lib/` 纯函数。
 - `pnpm lint` 内置 `scripts/check-file-size.mjs` 机器执行本规则，超限即失败。
 
 ### 入口文件通用防呆规则
@@ -41,6 +42,6 @@
 
 ## 5. 数据真实性红线
 
-- `src/lib/releases.ts` 是页面唯一数据源，**必须与 GitHub Releases 实际状态一致**。
+- `public/releases/*.md` 的 frontmatter 是发布记录唯一数据源，**必须与 GitHub Releases 实际状态一致**。
 - 未上传产物的版本只能标记为 `upcoming` / `testing`，下载入口显示"即将发布"，严禁伪造可下载链接或"已正式发布"字样。
 - 已知问题（如未公证、Gatekeeper 拦截）必须在页面如实提示，不得隐瞒。

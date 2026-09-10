@@ -22,17 +22,44 @@ Soniva 桌面端的**公开发布仓库**。这里做两件事：
 ## 技术栈
 
 - Next.js（App Router）+ React 19 + Tailwind CSS 4
-- shadcn 风格组件 + `@remixicon/react`
+- `@base-ui/react` + shadcn 风格组件 + `motion`（动画图标，与 Web 营销站 `soniva-website` 一致）
+- `react-markdown` + `remark-gfm` 渲染内容，`gray-matter` 解析 frontmatter
 - 静态导出（`output: "export"`）后部署到 GitHub Pages
+
+## 内容模型（不写死）
+
+页面的发布记录与文档**全部由 Markdown 驱动**，卡片信息从 md 中摘录，不在 TS 里硬编码：
+
+- `public/releases/<version>.md`（英文版 `<version>.en.md`）：frontmatter 存版本号、日期、
+  渠道（`released` / `testing` / `upcoming`）与下载资产；正文写更新说明。
+  卡片标题取正文 `# ` 标题，摘要取首个 `##` 之前的首段。
+- `public/docs/<slug>.md`（英文版 `<slug>.en.md`）：安装 / 首启 / 排障 / 更新等文档，
+  可选 `order` frontmatter 控制排序。
+
+构建期由 `src/lib/content/releases.ts`、`src/lib/content/docs.ts` 读取并生成清单；
+`/releases/<version>`、`/docs/<slug>` 通过 `generateStaticParams` 静态生成。
+新增版本或文档只需新增 md 文件，无需改任何组件。
+
+## 路由
+
+| 路径 | 说明 |
+|---|---|
+| `/` | 下载引导 + 滚动发布时间线（卡片点击进入详情） |
+| `/releases/<version>` | 单版本详情：下载资产 + 更新说明 |
+| `/docs` | 安装与排障文档列表 |
+| `/docs/<slug>` | 单篇文档 |
 
 ## 目录结构
 
 ```
-src/app/          页面与路由（入口只做装配）
-src/components/   UI 组件（ui/ 为基础组件）
-src/lib/          站点配置、发布记录数据、流水线状态
-scripts/          单文件行数检查等
-.agent/           Agent 协作文档与状态快照
+public/releases/   每个版本一个 md（frontmatter + 更新说明正文）
+public/docs/       安装 / 排障等文档 md
+src/app/           页面与路由（入口只做装配）
+src/components/    UI 组件（ui/ 基础组件，markdown/ 渲染器）
+src/hooks/         主题、语言等浏览器状态
+src/lib/           站点配置、i18n、内容读取与纯函数
+scripts/           单文件行数检查等
+.agent/            Agent 协作文档与状态快照
 ```
 
 ## 本地开发
@@ -63,7 +90,7 @@ pnpm build        # 静态导出到 out/
 
 1. 在 Mac 上于源码仓库完成签名、公证、DMG 打包与自检；
 2. 创建 `v<version>` Release，上传两个架构的 DMG 与 `latest-mac.yml`；
-3. 更新 `src/lib/releases.ts`，把该版本从「内测中」改为「已发布」并放开下载；
+3. 新增/更新 `public/releases/<version>.md`，把 `channel` 从 `testing` 改为 `released`；
 4. `pnpm verify && pnpm build`，推送触发 Pages 部署。
 
 ## 安全声明

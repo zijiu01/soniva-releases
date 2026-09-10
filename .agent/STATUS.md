@@ -8,10 +8,10 @@
 | 项 | 状态 |
 |---|---|
 | 仓库性质 | 公开分发仓库，只放展示层与文档 |
-| 网站 | ✅ Next.js 静态站点骨架已就绪（App Router + Tailwind 4 + shadcn 风格组件） |
+| 网站 | ✅ 下载引导 + 滚动发布时间线 + 文档页；导航/页脚/主题/语言移植自 Web 营销站 |
 | 部署 | ⏳ GitHub Pages 尚未绑定；部署配置见 `README.md` |
 | Release 资产 | ⬜ **尚未上传任何产物**（0.1.0 仍在打包验证） |
-| 页面数据 | `src/lib/releases.ts`，当前 0.1.0 标记为「内测中」 |
+| 页面数据 | `public/releases/*.md` 的 frontmatter（md 驱动，不写死），当前 0.1.0 标记为「内测中」 |
 | 下载入口 | ⛔ 全部置灰「即将发布」——产物未上传前禁止放开 |
 
 ## 上游桌面端（Soniva Desktop）状态
@@ -39,5 +39,5 @@
 1. 在 Mac 上重跑完整 `dist:mac`，确认两个 DMG 命名正确且 `latest-mac.yml` 生成。
 2. `electron-builder.yml` 的 `publish.owner/repo` 改为本仓库真实路径。
 3. 创建 `v0.1.0` Release 并上传 DMG + `latest-mac.yml`。
-4. 上传完成后：更新 `src/lib/releases.ts` 为已发布、放开下载入口。
+4. 上传完成后：更新 `public/releases/0.1.0.md` 的 `channel` 为 `released`，放开下载入口。
 5. 绑定 GitHub Pages，确认线上页面可访问。
