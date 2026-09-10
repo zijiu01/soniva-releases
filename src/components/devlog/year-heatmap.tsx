@@ -52,16 +52,20 @@ export function YearHeatmap({ entries, onSelect }: Props) {
               </button>
               {open && (
                 <div className="grid grid-cols-3 gap-x-3 gap-y-4 pb-4 pt-1">
-                  {Array.from({ length: 12 }, (_, index) => (
-                    <MonthGrid
-                      key={index}
-                      year={year}
-                      month={index + 1}
-                      label={monthNames[index]}
-                      days={days}
-                      onSelect={onSelect}
-                    />
-                  ))}
+                  {/* 月份与年份同为倒序：12月在前、1月在后 */}
+                  {Array.from({ length: 12 }, (_, index) => {
+                    const month = 12 - index;
+                    return (
+                      <MonthGrid
+                        key={month}
+                        year={year}
+                        month={month}
+                        label={monthNames[month - 1]}
+                        days={days}
+                        onSelect={onSelect}
+                      />
+                    );
+                  })}
                 </div>
               )}
             </div>

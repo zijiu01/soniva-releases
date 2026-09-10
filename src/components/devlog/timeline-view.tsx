@@ -36,6 +36,8 @@ export function TimelineView({ entries, bodies }: Props) {
 
   const scrollToEntry = (entry: TimelineEntry) => {
     select(entry);
+    // 频率图点击：滚动中间栏让对应卡片进入视野（即时滚动，smooth 会被部分环境丢弃）
+    document.getElementById(`tl-${entry.id}`)?.scrollIntoView({ block: "center" });
   };
 
   const filtered = useMemo(() => {
