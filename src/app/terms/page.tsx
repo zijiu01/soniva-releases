@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { TermsDocument } from "@/components/legal/terms-document";
+import { LegalDocument } from "@/components/legal/legal-document";
 import { getLegalDocument } from "@/lib/content/legal";
 
 export const metadata: Metadata = {
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   const doc = getLegalDocument("terms");
-  return <TermsDocument doc={doc} />;
+  return <LegalDocument source="terms" doc={doc} />;
 }
