@@ -13,6 +13,7 @@
 | 页面数据 | `public/releases/0.1.2.md`（channel: released，首发即 0.1.2——0.1.0/0.1.1 从未公开发布，条目已删）+ `public/devlog/*.md`（3 份桌面端原文档）；另有 `src/lib/content/mock-entries.ts` 演示占位数据（复用真实文档内容只铺日期），真实日志就位后删除该文件并摘除 timeline.ts 的调用 |
 | 下载入口 | ✅ 已放开，指向 `github.com/zijiu01/soniva-releases/releases/download/v0.1.2/` 真实资产 |
 | 自动更新 | ⬜ latest-mac.yml 已随 Release 上传，但端到端链路未实测 |
+| 部署 | ✅ GitHub Pages 已启用（build_type=workflow）并部署成功：https://zijiu01.github.io/soniva-releases/ ；曾因 workflow 的 pnpm version 输入与 packageManager 字段冲突失败，已修复 |
 
 ## 上游桌面端（Soniva Desktop）状态
 
@@ -27,7 +28,6 @@
 
 ## 下一步（阻塞项）
 
-1. 验证 GitHub Pages 部署：push main 后 Actions 自动构建（`deploy-pages.yml`），确认线上页面与下载链接可达。
-2. 自动更新端到端实测：装 0.1.2 → 发 0.1.3 → 观察旧版是否弹更新。
-3. 真实 DevLog 日志就位后删除 `mock-entries.ts` 演示数据。
-4. Windows 打包（批次 8）。
+1. 自动更新端到端实测：装 0.1.2 → 发 0.1.3 → 观察旧版是否弹更新。
+2. 真实 DevLog 日志就位后删除 `mock-entries.ts` 演示数据。
+3. Windows 打包（批次 8）。
