@@ -2,7 +2,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { getDevlogPosts } from "@/lib/content/devlog";
 import { getReleases } from "@/lib/content/releases";
-import { buildMockEntries } from "@/lib/content/mock-entries";
 import type { TimelineEntry } from "@/lib/content/types";
 
 /** 卡片示意图目录（.gitignore 的本地占位素材，不存在则回退图标块）。 */
@@ -67,7 +66,7 @@ export function getTimelineEntries(): TimelineEntry[] {
     summaryEn: post.summaryEn,
     source: post.source,
   }));
-  return [...releases, ...docs, ...buildMockEntries()]
+  return [...releases, ...docs]
     .sort((a, b) => (b.date ?? "9999-99-99").localeCompare(a.date ?? "9999-99-99"))
     .map(assignImage);
 }
