@@ -70,7 +70,7 @@ LATEST=$(curl ${CURL[@]+"${CURL[@]}"} -s -m 15 -H "Authorization: Bearer $TOKEN"
 LATEST=${LATEST#v}
 info "基座版本 $VER ｜ 线上最新 ${LATEST:-无}"
 if [ -n "$LATEST" ] && [ "$VER" != "$(printf '%s\n%s\n' "$LATEST" "$VER" | sort -V | tail -1)" ]; then
-  info "线上已是最新（$LATEST >= $VER），无事可做。"
+  info "线上已是最新（${LATEST} >= ${VER}），无事可做。"
   exit 0
 fi
 
@@ -123,7 +123,7 @@ fi
 REL_ID=$(curl ${CURL[@]+"${CURL[@]}"} -s -m 15 -H "Authorization: Bearer $TOKEN" \
   "https://api.github.com/repos/$GH_REPO/releases/tags/v$VER" | python3 -c "import json,sys;print(json.load(sys.stdin).get('id',''))" 2>/dev/null)
 if [ -n "$REL_ID" ]; then
-  info "Release v$VER 已存在（id=$REL_ID），跳过创建"
+  info "Release v${VER} 已存在（id=${REL_ID}），跳过创建"
 else
   NOTES=$(mktemp)
   printf '# Soniva %s\n\nSoniva 桌面端 %s 发布。Developer ID 签名 + Apple 公证通过（Gatekeeper accepted），\n双架构 DMG（Apple Silicon / Intel）与自动更新清单 latest-mac.yml 一并上传。\n\n更新说明与开发过程见发布记录页：%s/releases/%s\n' "$VER" "$VER" "$SITE_URL" "$VER" > "$NOTES"
@@ -134,14 +134,21 @@ else
   REL_ID=$(echo "$RESP" | python3 -c "import json,sys;d=json.load(sys.stdin);print(d.get('id',''))" 2>/dev/null)
   rm -f "$NOTES" "$PAYLOAD"
   [ -n "$REL_ID" ] || die 4 "创建 Release v$VER 失败：$(echo "$RESP" | head -c 200)"
-  ok "Release v$VER 已创建（id=$REL_ID）"
+  ok "Release v${VER} 已创建（id=${REL_ID}）"
 fi
-upload() { # upload <本地文件> <资产名>
-  local code
+upload() { # upload <本地文件> <资产名>（已存在的资产跳过，幂等重跑安全）
+  local code exists
+  exists=$(curl ${CURL[@]+"${CURL[@]}"} -s -m 15 -H "Authorization: Bearer $TOKEN" \
+    "https://api.github.com/repos/$GH_REPO/releases/$REL_ID" | \
+    A="$2" python3 -c "import json,sys,os;print('yes' if any(a['name']==os.environ['A'] for a in json.load(sys.stdin).get('assets',[])) else 'no')" 2>/dev/null)
+  if [ "$exists" = "yes" ]; then
+    info "资产已存在，跳过：$2"
+    return 0
+  fi
   code=$(curl ${CURL[@]+"${CURL[@]}"} -s -o /dev/null -w '%{http_code}' -m 570 -X POST \
     -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/octet-stream" \
     --data-binary @"$1" "https://uploads.github.com/repos/$GH_REPO/releases/$REL_ID/assets?name=$2")
-  [ "$code" = "201" ] || die 4 "上传 $2 失败（HTTP $code）"
+  [ "$code" = "201" ] || die 4 "上传 $2 失败（HTTP ${code}）"
   ok "已上传 $2"
 }
 upload "$DMG_ARM" "Soniva-$VER-arm64.dmg"
@@ -226,7 +233,7 @@ git add "public/releases/$VER.md" "public/releases/$VER.en.md" public/devlog/ sc
 if git diff --cached --quiet; then
   info "没有需要提交的变更"
 else
-  git commit -m "feat(releases): 自动发版 v$VER——Release 资产、发布页数据与当日开发日志
+  git commit -m "feat(releases): 自动发版 v${VER}：Release 资产、发布页数据与当日开发日志
 
 - scripts/publish-release.sh 全自动流水线产物：门禁（版本/产物/sha512/公证实测）全过后执行
 - 同步增量开发日志（scripts/gen-devlog.py）
