@@ -12,7 +12,7 @@
 | Release 资产 | ✅ **v0.1.2 已发布**（2026-09-20）：`Soniva-0.1.2-arm64.dmg`（172MB）+ `Soniva-0.1.2.dmg`（Intel，176MB）+ `latest-mac.yml`，公证/Gatekeeper 均通过 |
 | 页面数据 | `public/releases/*.md`（v0.1.2 released + 后续版本由自动发版脚本生成）+ `public/devlog/*.md` **真实开发日志 31 篇**：总览《从 0 到 v0.1.2》1 篇 + 按天日志 30 篇（2026-08-24→09-24，desktop git log 按作者日逐日落档，1300 上下提交，`scripts/gen-devlog.py` 随自动发版增量重生成）+ 桌面端原文档 3 份；`mock-entries.ts` 已删除；卡片示意图已停用 |
 | 下载入口 | ✅ 已放开，指向 `github.com/zijiu01/soniva-releases/releases/download/v0.1.2/` 真实资产 |
-| 自动发版 | ✅ `scripts/publish-release.sh`（门禁：版本/产物/sha512/公证实测 → Release+页面+日志+push+ntfy 通知）+ ZCode 每 30 分钟巡检；ntfy 频道在 `.env.local` 的 `NTFY_TOPIC` |
+| 自动发版 | ✅ `scripts/publish-release.sh` 一条命令（门禁：版本/产物/sha512/公证实测 → Release+页面+日志+push+ntfy 通知），不依赖 AI 会话/常驻进程；部署=push 触发 GitHub Pages + Vercel Git 双通道；ntfy 频道在 `.env.local` 的 `NTFY_TOPIC` |
 | 自动更新 | ⬜ latest-mac.yml 已随 Release 上传，但端到端链路未实测 |
 | 部署 | ✅ GitHub Pages 已启用（build_type=workflow）并部署成功：https://zijiu01.github.io/soniva-releases/ ；曾因 workflow 的 pnpm version 输入与 packageManager 字段冲突失败，已修复 |
 

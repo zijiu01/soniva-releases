@@ -68,9 +68,11 @@
 ## 7. 自动化发版（2026-09-24 起，首选方式）
 
 - **一条命令**：基座 `dist:mac` 跑完后执行 `bash scripts/publish-release.sh`
-  （`--check` 只校验不发布）。之后**无需任何人工步骤**。
-- **定时巡检**：ZCode 自动化每 30 分钟跑一次该脚本——基座版本号新于线上最新
-  Release 且门禁全过 → 自动发布并通知；否则静默收工。
+  （`--check` 只校验不发布）。**不依赖任何 AI 会话或常驻进程**，纯本地脚本 +
+  GitHub/Vercel 自身机制。
+- **部署链**：push main → GitHub Pages 自动部署；Vercel 项目已连 Git，
+  push 同样自动触发 Vercel 生产部署（`NEXT_PUBLIC_GITHUB_REPO` 已在 Vercel
+  项目环境变量里配置）。
 - **门禁**（任一不过即失败退出 + ntfy 通知，绝不带病上线）：
   版本号必须更新 / `out/` 三件齐全 / sha512 与 `latest-mac.yml` 一致 /
   双 DMG 挂载实测 codesign + `spctl accepted` + asar 含渲染层。
@@ -78,6 +80,9 @@
   `public/releases/<版本>.md`（中英）→ `scripts/gen-devlog.py` 增量重生成开发日志
   → `pnpm verify` + `build` → 精准提交 → push（直连失败自动走本地代理 7897）
   → ntfy.sh 通知（频道在 `.env.local` 的 `NTFY_TOPIC`，不入库）。
-- **通知**：发布成功/失败都推 ntfy + 本机系统通知；另一台电脑在 ntfy 订阅该频道即收。
 - 第 3 节的手动流程保留作为兜底；凭据用本机钥匙串 git 凭据（基座 `.env` 的旧
   GH_TOKEN 已失效，仅作历史参考）。
+- 终极形态（可选，未做）：desktop 仓库推 tag 触发 GitHub Actions 在云端构建 +
+  签名 + 公证 + 发 Release——真"推上去就有"，但私有仓库 macOS runner 计费 10×，
+  且需要把证书配成 Secrets，等发版频率上来再评估。
+- **通知**：发布成功/失败都推 ntfy + 本机系统通知；另一台电脑在 ntfy 订阅该频道即收。
