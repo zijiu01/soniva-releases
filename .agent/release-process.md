@@ -64,3 +64,20 @@
 
 - 产物有问题时：删除或标记对应 Release 为 pre-release，页面数据同步回退状态。
 - **不要**通过改写 Git 历史来"撤回"已公开的内容；公开仓库历史不可信撤回。
+
+## 7. 自动化发版（2026-09-24 起，首选方式）
+
+- **一条命令**：基座 `dist:mac` 跑完后执行 `bash scripts/publish-release.sh`
+  （`--check` 只校验不发布）。之后**无需任何人工步骤**。
+- **定时巡检**：ZCode 自动化每 30 分钟跑一次该脚本——基座版本号新于线上最新
+  Release 且门禁全过 → 自动发布并通知；否则静默收工。
+- **门禁**（任一不过即失败退出 + ntfy 通知，绝不带病上线）：
+  版本号必须更新 / `out/` 三件齐全 / sha512 与 `latest-mac.yml` 一致 /
+  双 DMG 挂载实测 codesign + `spctl accepted` + asar 含渲染层。
+- **发布动作**：API 建 Release + 传双 DMG + `latest-mac.yml` → 生成
+  `public/releases/<版本>.md`（中英）→ `scripts/gen-devlog.py` 增量重生成开发日志
+  → `pnpm verify` + `build` → 精准提交 → push（直连失败自动走本地代理 7897）
+  → ntfy.sh 通知（频道在 `.env.local` 的 `NTFY_TOPIC`，不入库）。
+- **通知**：发布成功/失败都推 ntfy + 本机系统通知；另一台电脑在 ntfy 订阅该频道即收。
+- 第 3 节的手动流程保留作为兜底；凭据用本机钥匙串 git 凭据（基座 `.env` 的旧
+  GH_TOKEN 已失效，仅作历史参考）。
