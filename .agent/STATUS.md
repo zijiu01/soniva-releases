@@ -9,10 +9,10 @@
 |---|---|
 | 仓库性质 | 公开分发仓库，只放展示层与文档 |
 | 网站 | ✅ DevLog 两栏（shadcn 中性风）：Hero + 快速定位频率图（每天一颗方块、按年折叠、月份倒序）/搜索/最新发布包 ｜ 月度分组卡片流（**卡片示意图已停用**，回退图标块）；卡片点击新标签打开详情页；新增本地 /terms 使用条款页（照录官网 legal markdown）；文档照录桌面端仓库原始 md（展示层滤 emoji）；导航/页脚保持不动 |
-| Release 资产 | ✅ **v0.1.2 已发布**（2026-09-20）：`Soniva-0.1.2-arm64.dmg`（172MB）+ `Soniva-0.1.2.dmg`（Intel，176MB）+ `latest-mac.yml`，公证/Gatekeeper 均通过 |
-| 页面数据 | `public/releases/*.md`（v0.1.2 released + 后续版本由自动发版脚本生成）+ `public/devlog/*.md` **真实开发日志 31 篇**：总览《从 0 到 v0.1.2》1 篇 + 按天日志 30 篇（2026-08-24→09-24，desktop git log 按作者日逐日落档，1300 上下提交，`scripts/gen-devlog.py` 随自动发版增量重生成）+ 桌面端原文档 3 份；`mock-entries.ts` 已删除；卡片示意图已停用 |
-| 下载入口 | ✅ 已放开，指向 `github.com/zijiu01/soniva-releases/releases/download/v0.1.2/` 真实资产 |
-| 自动发版 | ✅ `scripts/publish-release.sh` 一条命令（门禁：版本/产物/sha512/公证实测 → Release+页面+日志+push+ntfy 通知），不依赖 AI 会话/常驻进程；部署=push 触发 GitHub Pages + Vercel Git 双通道；ntfy 频道在 `.env.local` 的 `NTFY_TOPIC` |
+| Release 资产 | ✅ **v0.1.4 已发布**（2026-09-25，流水线自动发）：`Soniva-0.1.4-arm64.dmg`（172MB）+ `Soniva-0.1.4.dmg`（Intel，176MB）+ `latest-mac.yml`，公证/Gatekeeper 均通过；v0.1.2 / v0.1.3 同库存档 |
+| 页面数据 | `public/releases/*.md`（v0.1.2~v0.1.4 released，后续版本由自动发版脚本生成）+ `public/devlog/*.md` **真实开发日志 36 篇**（总览 1 + 按天日志，`scripts/gen-devlog.py` 随自动发版增量重生成）+ 桌面端原文档；卡片示意图已停用 |
+| 下载入口 | ✅ 已放开，指向 `github.com/zijiu01/soniva-releases/releases/download/v0.1.4/` 真实资产 |
+| 自动发版 | ✅ `scripts/publish-release.sh` 一条命令（门禁：版本/产物/sha512/公证实测 → Release+页面+日志+push+ntfy/邮件通知）；2026-09-25 起基座封装 `pnpm dist:mac:ship`＝打包+自动发版一条命令，不依赖 AI 会话/常驻进程；部署=push 触发 GitHub Pages + Vercel Git 双通道；ntfy 频道在 `.env.local` 的 `NTFY_TOPIC` |
 | 自动更新 | ⬜ latest-mac.yml 已随 Release 上传，但端到端链路未实测 |
 | 部署 | ✅ GitHub Pages 已启用（build_type=workflow）并部署成功：https://zijiu01.github.io/soniva-releases/ ；曾因 workflow 的 pnpm version 输入与 packageManager 字段冲突失败，已修复 |
 
@@ -20,7 +20,7 @@
 
 | 项 | 状态 |
 |---|---|
-| 版本 | `0.1.2`（`desktop/package.json`），已作为首个公开版本发布 |
+| 版本 | `0.1.4`（`desktop/package.json`，2026-09-25 回填落库并发布；0.1.4 打包时的工作区提版曾被还原，已修复为随功能批次提交） |
 | 签名 | ✅ Developer ID 签名通过（Team `KFU26MTY8J`） |
 | 公证 | ✅ 双架构 DMG 挂载实测 `spctl accepted`（Notarized Developer ID） |
 | 发布源配置 | ✅ `electron-builder.yml` publish 已指向 `zijiu01/soniva-releases` |
@@ -29,5 +29,5 @@
 
 ## 下一步（阻塞项）
 
-1. 自动更新端到端实测：装 0.1.2 → 发 0.1.3 → 观察旧版是否弹更新（0.1.3 已打包）。
+1. 自动更新端到端实测：装 0.1.2 → 发 0.1.4 → 观察旧版是否弹更新（0.1.2 无应用内更新交互界面，本跳只能手动下载安装 0.1.4，实测从 0.1.4 起观察后续版本）。
 2. Windows 打包（批次 8）。

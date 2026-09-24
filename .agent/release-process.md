@@ -70,6 +70,11 @@
 - **一条命令**：基座 `dist:mac` 跑完后执行 `bash scripts/publish-release.sh`
   （`--check` 只校验不发布）。**不依赖任何 AI 会话或常驻进程**，纯本地脚本 +
   GitHub/Vercel 自身机制。
+- **推荐入口（2026-09-25 起）**：基座目录直接 `pnpm dist:mac:ship` =
+  `dist:mac` 全流程 + 本脚本，打包完自动走门禁→发布→push→通知，不会再出现
+  "打包完忘了推第二步"（0.1.4 曾因此滞留本地，且工作区提版被还原、脚本读
+  0.1.3 空转；版本号已回填 0.1.4 落库）。路径可用 `SONIVA_RELEASES` 环境变量
+  覆盖，默认 `../../Releases/soniva-releases`。
 - **部署链**：push main → GitHub Pages 自动部署；Vercel 项目已连 Git，
   push 同样自动触发 Vercel 生产部署（`NEXT_PUBLIC_GITHUB_REPO` 已在 Vercel
   项目环境变量里配置）。
