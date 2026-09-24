@@ -27,13 +27,30 @@ ok()   { echo "✅ $*"; }
 bad()  { echo "❌ $*"; }
 info() { echo "ℹ️  $*"; }
 
-# ---------- 通知（远程 ntfy + 本机系统通知，均尽力而为不阻塞） ----------
+# ---------- 通知（邮件 + 远程 ntfy + 本机系统通知，均尽力而为不阻塞） ----------
+# 邮件（2026-09-24 用户要求"打包完别再去核对，邮件告诉我"）：.env.local 里填
+# NOTIFY_EMAIL=你的邮箱 即启用——走本机 Mail.app 已登录的账号发信（osascript
+# Apple Events），零新依赖、不需要任何 API 密钥。首次运行 macOS 会弹一次
+# "终端想要控制邮件"授权，允许一次即可；Mail 没登录/授权被拒时静默放弃，
+# ntfy 与系统通知照发。
+send_email() { # send_email <标题> <正文>
+  [ -n "${NOTIFY_EMAIL:-}" ] || return 0
+  osascript - "$1" "$2" <<'ASEOF' >/dev/null 2>&1 || true
+on run argv
+  tell application "Mail"
+    set msg to make new outgoing message with properties {subject:(item 1 of argv), content:(item 2 of argv) & linefeed & linefeed & "—— Soniva 自动发版流水线（" & (do shell script "date '+%F %T'") & "）", visible:false}
+    send msg
+  end tell
+end run
+ASEOF
+}
 notify() { # notify <标题> <正文>
   [ -f "$REPO_ROOT/.env.local" ] && . "$REPO_ROOT/.env.local"
   if [ -n "${NTFY_TOPIC:-}" ]; then
     curl -s -m 10 -H "Title: $1" -H "Tags: rocket" -d "$2" "https://ntfy.sh/$NTFY_TOPIC" >/dev/null 2>&1 || true
   fi
   osascript -e "display notification \"$2\" with title \"$1\"" >/dev/null 2>&1 || true
+  send_email "$1" "$2"
 }
 
 die() { # die <退出码> <原因>

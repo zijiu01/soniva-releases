@@ -79,10 +79,10 @@
 - **发布动作**：API 建 Release + 传双 DMG + `latest-mac.yml` → 生成
   `public/releases/<版本>.md`（中英）→ `scripts/gen-devlog.py` 增量重生成开发日志
   → `pnpm verify` + `build` → 精准提交 → push（直连失败自动走本地代理 7897）
-  → ntfy.sh 通知（频道在 `.env.local` 的 `NTFY_TOPIC`，不入库）。
+  → 通知三通道：邮件（`.env.local` 填 `NOTIFY_EMAIL`，走本机 Mail.app 发信）+ ntfy.sh（频道在 `NTFY_TOPIC`，不入库）+ 本机系统通知。
 - 第 3 节的手动流程保留作为兜底；凭据用本机钥匙串 git 凭据（基座 `.env` 的旧
   GH_TOKEN 已失效，仅作历史参考）。
 - 终极形态（可选，未做）：desktop 仓库推 tag 触发 GitHub Actions 在云端构建 +
   签名 + 公证 + 发 Release——真"推上去就有"，但私有仓库 macOS runner 计费 10×，
   且需要把证书配成 Secrets，等发版频率上来再评估。
-- **通知**：发布成功/失败都推 ntfy + 本机系统通知；另一台电脑在 ntfy 订阅该频道即收。
+- **通知**：发布成功/失败推三通道——邮件（`NOTIFY_EMAIL`，2026-09-24 用户要求"打包完别再去核对"）+ ntfy + 本机系统通知；另一台电脑在 ntfy 订阅该频道即收。
