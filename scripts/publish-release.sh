@@ -9,7 +9,8 @@
 #   2. out/ 里双架构 DMG + latest-mac.yml 齐全，且 sha512 与 latest-mac.yml 完全一致
 #   3. 双 DMG 挂载实测：签名有效 + spctl accepted（公证票据）+ asar 含渲染层
 #
-# 发布动作：GitHub API 建 Release + 传 3 资产 → 生成 public/releases/<版本>.md（中英）
+# 发布动作：GitHub API 建 Release + 传 7 资产（双架构 zip+blockmap、双架构 DMG、
+#   latest-mac.yml）→ 生成 public/releases/<版本>.md（中英）
 #   → 增量重生成开发日志 → pnpm verify + build → 精准提交 → push（直连失败自动走本地代理）
 #   → ntfy.sh 远程通知 + 本机系统通知。
 # 凭据：本机钥匙串的 GitHub 凭据（git credential fill），不落盘不打印。
@@ -168,6 +169,15 @@ upload() { # upload <本地文件> <资产名>（已存在的资产跳过，幂�
   [ "$code" = "201" ] || die 4 "上传 $2 失败（HTTP ${code}）"
   ok "已上传 $2"
 }
+# 🚨 2026-10-01 根因修复：自动更新一直 404——这里原来只传 3 资产（双架构 DMG +
+# yml），但 09-27 起 latest-mac.yml 里引用了双架构 zip（MacUpdater 只认 zip，
+# 不认 dmg），zip 从没被上传过。0.1.6 老客户端每次 update-available → 自动下载
+# zip → 404 → 错误落进"免打扰"分支，用户端零反馈（"重启了也没通知"即此）。
+# zip 必须随包上传；blockmap 供差量下载，缺了会退回全量下载（不致命但费流量）。
+upload "$OUT/Soniva-$VER-mac.zip" "Soniva-$VER-mac.zip"
+upload "$OUT/Soniva-$VER-arm64-mac.zip" "Soniva-$VER-arm64-mac.zip"
+upload "$OUT/Soniva-$VER-mac.zip.blockmap" "Soniva-$VER-mac.zip.blockmap"
+upload "$OUT/Soniva-$VER-arm64-mac.zip.blockmap" "Soniva-$VER-arm64-mac.zip.blockmap"
 upload "$DMG_ARM" "Soniva-$VER-arm64.dmg"
 upload "$DMG_X64" "Soniva-$VER.dmg"
 upload "$YML" "latest-mac.yml"
