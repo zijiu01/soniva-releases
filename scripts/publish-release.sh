@@ -243,8 +243,13 @@ python3 "$REPO_ROOT/scripts/gen-devlog.py" >/dev/null || die 5 "开发日志重�
 
 # ---------- 6. 构建验证 + 提交 + 推送 ----------
 cd "$REPO_ROOT"
-pnpm verify >/dev/null 2>&1 || die 5 "pnpm verify（typecheck/lint）失败"
-pnpm build >/dev/null 2>&1 || die 5 "pnpm build 失败"
+# 2026-10-01：verify/build 的输出原来被整体吞掉，失败时只给一句"失败"——
+# 0.1.7~0.1.11 四个版本的发布页全卡在这看不出来原因。改成失败时先打出
+# 真实报错再 die，成功时保持安静。
+RUN_LOG=$(mktemp)
+pnpm verify >"$RUN_LOG" 2>&1 || { tail -n 40 "$RUN_LOG"; rm -f "$RUN_LOG"; die 5 "pnpm verify（typecheck/lint）失败（上方为真实报错）"; }
+pnpm build >"$RUN_LOG" 2>&1 || { tail -n 40 "$RUN_LOG"; rm -f "$RUN_LOG"; die 5 "pnpm build 失败（上方为真实报错）"; }
+rm -f "$RUN_LOG"
 ok "typecheck/lint/build 全部通过"
 git add "public/releases/$VER.md" "public/releases/$VER.en.md" public/devlog/ scripts/ 2>/dev/null
 if git diff --cached --quiet; then
