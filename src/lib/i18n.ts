@@ -92,6 +92,9 @@ export const siteCopy: Dictionary = {
     searchPlaceholder: "搜索日志或关键词...",
     searchEmpty: "没有匹配的日志。",
     relatedReading: "相关阅读",
+    consentNotice: "本站用匿名下载计数和（经你同意的）Google Analytics 统计来改进产品，不收集个人身份信息。",
+    consentAccept: "接受",
+    consentReject: "拒绝",
   },
   "en-US": {
     navHome: "Home",
@@ -160,5 +163,8 @@ export const siteCopy: Dictionary = {
     searchPlaceholder: "Search logs or keywords...",
     searchEmpty: "No matching entries.",
     relatedReading: "Related",
+    consentNotice: "This site counts downloads anonymously and — with your consent — uses Google Analytics to improve the product. No personal identity is collected.",
+    consentAccept: "Accept",
+    consentReject: "Decline",
   },
 };

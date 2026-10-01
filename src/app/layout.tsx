@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { WebsiteFooter } from "@/components/website-footer";
 import { WebsiteHeader } from "@/components/website-header";
+import { CookieConsent } from "@/components/legal/cookie-consent";
 import { WebsiteLocaleProvider } from "@/hooks/use-website-locale";
 import { site } from "@/lib/site";
 
@@ -56,6 +57,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <WebsiteHeader />
           <main className="flex-1">{children}</main>
           <WebsiteFooter />
+          <CookieConsent />
         </WebsiteLocaleProvider>
       </body>
     </html>

@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { ChannelBadge } from "@/components/channel-badge";
+import { DownloadLink } from "@/components/download-link";
 import { MarkdownContent } from "@/components/markdown/markdown-content";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { useWebsiteLocale } from "@/hooks/use-website-locale";
 import { siteCopy, useT } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -52,9 +53,15 @@ export function ReleaseDetail({ release, bodies }: { release: ReleaseEntry; bodi
                   </div>
                   <div className="ml-auto">
                     {asset.href ? (
-                      <a href={asset.href} className={buttonVariants({ size: "sm", variant: "default" })}>
+                      <DownloadLink
+                        href={asset.href}
+                        version={release.version}
+                        platform={asset.platform}
+                        arch={asset.arch ?? ""}
+                        filename={asset.filename}
+                      >
                         {t("homeDownload")}
-                      </a>
+                      </DownloadLink>
                     ) : (
                       <Button size="sm" variant="outline" disabled>
                         {t("homeComingSoon")}
