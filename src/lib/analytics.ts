@@ -2,22 +2,17 @@
  * 下载站的匿名统计出口（2026-10-02）：两个互不依赖的通道——
  * ① GA4：gtag.js 只在用户点了 Cookie 同意条「接受」之后才加载（components/legal/
  *    cookie-consent.tsx），没同意时 window.gtag 不存在，这里天然什么都不发；
- * ② 下载事件：点击下载按钮时向开发者 Supabase 的 site_download_events 表匿名
- *    INSERT（publishable key 只开 insert、RLS 保证公网读不到，与谷歌插件 Talkdown
- *    的 report.js 同一安全模型）。这条不写任何 Cookie / 本地存储、不带任何
- *    用户标识，属于运营计数，不需要等同意条。
- *
- * 建表 SQL：supabase/analytics-tables.sql（Supabase Dashboard 里跑一次）。
- * 表没建时插入静默失败，绝不影响下载本身。
+ * ② 下载事件：POST web 生产的 /api/downloads/track（对接契约见 web 仓库
+ *    src/app/api/downloads/track/route.ts 顶部注释），由服务端写 download_events
+ *    表——那张表刻意不给 anon 任何权限（只收服务端写入），所以站点必须走这条
+ *    API 通道、不能直连 PostgREST。sendBeacon 发出去就忘（永远 204，IP 限流
+ *    30/分），web 尚未部署该路由时静默丢失，不影响下载本身。
+ * 建表与迁移一律走 web/supabase/migrations 迁移链，不在本仓库散装 SQL。
  */
 
-export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-MY14R4KCP5";
+import { site } from "@/lib/site";
 
-// 与 Talkdown 插件同一个生产 Supabase 项目；publishable key 本就是公开凭证
-// （插件公开仓库里也带着），能做什么全由库内 RLS 决定。
-const SUPABASE_URL = "https://lktsblmcvyddksrstkuu.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_2hUnakuKbiSxNDvVn4XFzw_lzAVqHt4";
-const DOWNLOAD_EVENTS_TABLE = "site_download_events";
+export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-MY14R4KCP5";
 
 type GtagFn = (...args: unknown[]) => void;
 
@@ -42,36 +37,35 @@ export interface DownloadEventData {
   locale: string;
 }
 
-/** 点击真实下载资产时的匿名写库 + GA4 双报。全站唯一调用点是 DownloadLink。 */
+/** 契约枚举：macos=Intel、macos-arm=Apple Silicon。产物文件名里的 arm64 最稳。 */
+function platformFor(filename: string): string {
+  return /arm64/i.test(filename) ? "macos-arm" : "macos";
+}
+
+/** 点击真实下载资产时的双报：web API 计数 + GA4 事件。全站唯一调用点是 DownloadLink。 */
 export function reportDownloadEvent(data: DownloadEventData): void {
   if (typeof window === "undefined") return;
-  const row = {
+  const payload = JSON.stringify({
+    platform: platformFor(data.filename),
+    version: data.version.slice(0, 32),
+    referrer: `${window.location.pathname} [${data.locale}]`.slice(0, 200),
+  });
+  trackGtagEvent("download_click", {
     version: data.version.slice(0, 32),
     platform: data.platform.slice(0, 32),
     arch: data.arch.slice(0, 32),
-    filename: data.filename.slice(0, 128),
-    locale: data.locale.slice(0, 8),
+    file_name: data.filename.slice(0, 128),
     page_path: window.location.pathname.slice(0, 256),
-    referrer: document.referrer ? document.referrer.slice(0, 256) : null,
-  };
-  trackGtagEvent("download_click", {
-    version: row.version,
-    platform: row.platform,
-    arch: row.arch,
-    file_name: row.filename,
-    page_path: row.page_path,
   });
-  // keepalive：点击后立刻跳 GitHub，请求也得活着发出去
-  void fetch(`${SUPABASE_URL}/rest/v1/${DOWNLOAD_EVENTS_TABLE}`, {
+  const url = `${site.appUrl}/api/downloads/track`;
+  // sendBeacon：字符串 body 以 text/plain 发送（简单请求无预检），跳转不丢请求；
+  // 服务端 req.json() 不挑 Content-Type。失败再退一格 keepalive fetch。
+  if (navigator.sendBeacon(url, payload)) return;
+  void fetch(url, {
     method: "POST",
     keepalive: true,
-    headers: {
-      "Content-Type": "application/json",
-      apikey: SUPABASE_PUBLISHABLE_KEY,
-      Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-      Prefer: "return=minimal",
-    },
-    body: JSON.stringify([row]),
+    headers: { "Content-Type": "text/plain" },
+    body: payload,
   }).catch(() => {
     // 统计尽力而为，失败静默
   });

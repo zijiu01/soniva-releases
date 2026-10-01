@@ -9,7 +9,7 @@
 |---|---|
 | 仓库性质 | 公开分发仓库，只放展示层与文档 |
 | 网站 | ✅ DevLog 两栏（shadcn 中性风）：Hero + 快速定位频率图（每天一颗方块、按年折叠、月份倒序）/搜索/最新发布包 ｜ 月度分组卡片流（**卡片示意图已停用**，回退图标块）；卡片点击新标签打开详情页；新增本地 /terms 使用条款页（照录官网 legal markdown）；文档照录桌面端仓库原始 md（展示层滤 emoji）；导航/页脚保持不动 |
-| 匿名统计（2026-10-02） | ✅ ①下载点击 → `site_download_events` 匿名 INSERT（`src/lib/analytics.ts`，全站唯一挂载点 `DownloadLink`，release-detail 详情页按钮）；②GA4（复用主站 G-MY14R4KCP5，`NEXT_PUBLIC_GA_MEASUREMENT_ID` 可覆盖）+ Cookie 同意条（`components/legal/cookie-consent.tsx`，localStorage 存 `soniva_cookie_consent`，同意后才加载 gtag）；③建表 SQL 在 `supabase/analytics-tables.sql`——**待用户在 Supabase Dashboard 执行一次，执行前下载事件静默失败** |
+| 匿名统计（2026-10-02） | ✅ ①下载点击 → `sendBeacon` POST web 生产 `/api/downloads/track`（契约在 web 仓库该路由顶部），落 web 库 `download_events` 表（9-23 已建，站点不直连 PostgREST——那张表只收服务端写入）；②GA4（复用主站 G-MY14R4KCP5，`NEXT_PUBLIC_GA_MEASUREMENT_ID` 可覆盖）+ Cookie 同意条（同意后才加载 gtag，localStorage 存 `soniva_cookie_consent`）；③桌面端更新器事件 → `desktop_update_events`，建表已进 web 迁移链（`20261002000000`）。⚠️ 两通道上线前置：**生产 db push（本地链欠 6+1 个迁移）+ web 重新部署（生产停在 9-19，track 路由未上线）** |
 | Release 资产 | ✅ 最新 **v0.1.11**（2026-09-30，流水线自动发）；v0.1.2~v0.1.11 同库存档，公证/Gatekeeper 均通过 |
 | 页面数据 | `public/releases/*.md`（v0.1.2~v0.1.4 released，后续版本由自动发版脚本生成）+ `public/devlog/*.md` **真实开发日志 36 篇**（总览 1 + 按天日志，`scripts/gen-devlog.py` 随自动发版增量重生成）+ 桌面端原文档；卡片示意图已停用 |
 | 下载入口 | ✅ 已放开，指向 `github.com/zijiu01/soniva-releases/releases/download/v0.1.4/` 真实资产 |
@@ -30,6 +30,7 @@
 
 ## 下一步（阻塞项）
 
-1. **用户在 Supabase Dashboard 执行 `supabase/analytics-tables.sql`**（两表 + anon insert-only RLS）——执行前下载/更新事件静默失败不落库。
-2. 自动更新端到端实测：装 0.1.2 → 发 0.1.4 → 观察旧版是否弹更新（0.1.2 无应用内更新交互界面，本跳只能手动下载安装 0.1.4，实测从 0.1.4 起观察后续版本）。
-3. Windows 打包（批次 8）。
+1. **生产库 db push**：本地迁移链欠 6+1 个（20260921→20261002000000），待用户点头在 web/ 执行 `supabase db push`（含下载统计两表、插件表补录、桌面更新事件表）。
+2. **web 重新部署生产**：生产 Vercel 停在 9-19，`/api/downloads/track` 与 GitHub 快照 cron 均未上线——部署后下载计数通道才通。
+3. 自动更新端到端实测：装 0.1.2 → 发 0.1.4 → 观察旧版是否弹更新（0.1.2 无应用内更新交互界面，本跳只能手动下载安装 0.1.4，实测从 0.1.4 起观察后续版本）。
+4. Windows 打包（批次 8）。
