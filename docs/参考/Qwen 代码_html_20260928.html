@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soniva 开发日志</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Inter 字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- 引入 Phosphor Icons (轻量级图标) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        border: "hsl(var(--border))",
+                        input: "hsl(var(--input))",
+                        ring: "hsl(var(--ring))",
+                        background: "hsl(var(--background))",
+                        foreground: "hsl(var(--foreground))",
+                        primary: {
+                            DEFAULT: "hsl(var(--primary))",
+                            foreground: "hsl(var(--primary-foreground))",
+                        },
+                        secondary: {
+                            DEFAULT: "hsl(var(--secondary))",
+                            foreground: "hsl(var(--secondary-foreground))",
+                        },
+                        muted: {
+                            DEFAULT: "hsl(var(--muted))",
+                            foreground: "hsl(var(--muted-foreground))",
+                        },
+                    },
+                    borderRadius: {
+                        lg: "var(--radius)",
+                        md: "calc(var(--radius) - 2px)",
+                        sm: "calc(var(--radius) - 4px)",
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        :root {
+            --background: 0 0% 100%;
+            --foreground: 222.2 84% 4.9%;
+            --card: 0 0% 100%;
+            --card-foreground: 222.2 84% 4.9%;
+            --popover: 0 0% 100%;
+            --popover-foreground: 222.2 84% 4.9%;
+            --primary: 222.2 47.4% 11.2%;
+            --primary-foreground: 210 40% 98%;
+            --secondary: 210 40% 96.1%;
+            --secondary-foreground: 222.2 47.4% 11.2%;
+            --muted: 210 40% 96.1%;
+            --muted-foreground: 215.4 16.3% 46.9%;
+            --accent: 210 40% 96.1%;
+            --accent-foreground: 222.2 47.4% 11.2%;
+            --destructive: 0 84.2% 60.2%;
+            --destructive-foreground: 210 40% 98%;
+            --border: 214.3 31.8% 91.4%;
+            --input: 214.3 31.8% 91.4%;
+            --ring: 222.2 84% 4.9%;
+            --radius: 0.5rem;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 24px;
+            top: 8px;
+            bottom: -24px;
+            width: 1px;
+            background-color: hsl(var(--border));
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-white">
+
+    <!-- 顶部导航 -->
+    <header class="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div class="container mx-auto max-w-5xl flex h-14 items-center justify-between px-4 sm:px-6">
+            <div class="flex items-center gap-2 font-medium text-lg">
+                <i class="ph-fill ph-sparkle text-primary"></i>
+                Soniva
+            </div>
+            <nav class="flex items-center gap-6 text-sm text-muted-foreground font-medium">
+                <a href="#" class="hidden md:flex hover:text-primary transition-colors">下载</a>
+                <a href="#" class="hover:text-primary text-primary transition-colors">版本记录</a>
+                <a href="#" class="hidden md:flex hover:text-primary transition-colors">文档</a>
+                <a href="#" class="hidden md:flex hover:text-primary transition-colors">定价</a>
+                <div class="flex items-center gap-1 cursor-pointer hover:text-primary transition-colors">
+                    协议 <i class="ph-bold ph-caret-down"></i>
+                </div>
+                <button class="ml-2 px-3 py-1.5 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:opacity-90 transition-opacity">
+                    进入应用 &rarr;
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero 区域 -->
+    <section class="container mx-auto max-w-5xl px-4 py-16 sm:px-6 border-b border-border">
+        <div class="flex flex-col md:flex-row justify-between items-start gap-8">
+            <div class="max-w-2xl">
+                <div class="inline-flex items-center rounded-full border border-border px-3 py-1 text-sm font-medium mb-4">
+                    开发日志
+                </div>
+                <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl mb-4">记录每一次的进步</h1>
+                <p class="text-muted-foreground text-lg leading-relaxed mb-8">
+                    这里是 Soniva 桌面端的开发日志：版本发布与开发文档汇成一条时间线，可以按日期快速定位，也可以下载最新的发布包。
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <button class="px-5 py-2.5 bg-foreground text-background rounded-md text-sm font-medium hover:opacity-90 transition-opacity shadow-sm">
+                        查看最新日志
+                    </button>
+                    <button class="px-5 py-2.5 border border-border bg-background text-foreground rounded-md text-sm font-medium hover:bg-secondary transition-colors">
+                        下载最新包
+                    </button>
+                </div>
+            </div>
+            <div class="relative w-full max-w-xs md:max-w-sm lg:max-w-md">
+                <div class="absolute -top-4 -right-4 w-24 h-24 bg-secondary/30 rounded-full blur-3xl"></div>
+                <div class="relative bg-white border border-border rounded-xl shadow-lg p-6">
+                    <div class="flex items-center gap-3 mb-4 border-b border-border pb-3">
+                        <div class="w-8 h-8 bg-secondary rounded-md flex items-center justify-center text-muted-foreground">
+                            <i class="ph-bold ph-code"></i>
+                        </div>
+                        <div class="text-sm font-medium">v0.1.5 开发预览</div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="h-2 bg-secondary rounded-full w-full"></div>
+                        <div class="h-2 bg-secondary rounded-full w-5/6"></div>
+                        <div class="h-2 bg-secondary rounded-full w-4/6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 主体内容区域 -->
+    <main class="container mx-auto max-w-5xl px-4 py-10 sm:px-6">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-10">
+            
+            <!-- 左侧控制面板 (简化设计) -->
+            <aside class="md:col-span-3 space-y-8">
+                <div class="relative">
+                    <i class="ph-bold ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"></i>
+                    <input type="text" placeholder="搜索日志或关键词..." 
+                        class="w-full rounded-md border border-border bg-white px-9 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-sm mb-3 px-1">年份归档</h3>
+                    <div class="border border-border rounded-lg p-2 bg-white shadow-sm">
+                        <div class="flex items-center justify-between px-2 py-1.5 rounded-md hover:bg-secondary/50 cursor-pointer transition-colors">
+                            <span class="text-sm font-medium">2026</span>
+                            <span class="text-xs text-muted-foreground">42 条</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-sm mb-3 px-1">最新发布包</h3>
+                    <div class="space-y-1">
+                        <div class="group flex items-center justify-between rounded-lg p-3 border border-border bg-white shadow-sm hover:bg-secondary/50 transition-colors cursor-pointer">
+                            <div>
+                                <div class="font-medium text-sm">v0.1.5</div>
+                                <div class="text-xs text-muted-foreground">2026-09-27</div>
+                            </div>
+                            <i class="ph-bold ph-download-simple text-muted-foreground group-hover:text-primary transition-colors"></i>
+                        </div>
+                        <div class="group flex items-center justify-between rounded-lg p-3 border border-border bg-white shadow-sm hover:bg-secondary/50 transition-colors cursor-pointer">
+                            <div>
+                                <div class="font-medium text-sm">v0.1.4</div>
+                                <div class="text-xs text-muted-foreground">2026-09-25</div>
+                            </div>
+                            <i class="ph-bold ph-download-simple text-muted-foreground group-hover:text-primary transition-colors"></i>
+                        </div>
+                        <div class="group flex items-center justify-between rounded-lg p-3 border border-border bg-white shadow-sm hover:bg-secondary/50 transition-colors cursor-pointer">
+                            <div>
+                                <div class="font-medium text-sm">v0.1.3</div>
+                                <div class="text-xs text-muted-foreground">2026-09-24</div>
+                            </div>
+                            <i class="ph-bold ph-download-simple text-muted-foreground group-hover:text-primary transition-colors"></i>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 右侧时间线 -->
+            <div class="md:col-span-9 relative pl-8">
+                <h2 class="text-xl font-semibold mb-8">2026 年 9 月</h2>
+                
+                <!-- 时间线卡片列表 -->
+                <div class="space-y-10">
+                    
+                    <!-- 卡片 1 -->
+                    <div class="relative">
+                        <div class="timeline-line"></div>
+                        <!-- 时间点 -->
+                        <div class="absolute left-[-37px] top-1 z-10 h-3.5 w-3.5 rounded-full border-4 border-background bg-muted-foreground"></div>
+                        
+                        <div class="flex flex-col gap-6 md:flex-row">
+                            <!-- 时间标签 -->
+                            <div class="md:w-32 flex-shrink-0 pt-1">
+                                <span class="text-sm font-medium text-muted-foreground">9月27日</span>
+                            </div>
+                            
+                            <!-- 内容卡片 -->
+                            <div class="flex-1 border border-border rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition-shadow">
+                                <div class="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                                    <span class="bg-primary/10 text-primary px-2 py-0.5 rounded font-medium">发布</span>
+                                    <span>发布包 v0.1.5</span>
+                                    <span class="text-foreground">2026-09-27</span>
+                                </div>
+                                <h3 class="text-lg font-semibold mb-2">Soniva 0.1.5</h3>
+                                <p class="text-muted-foreground text-sm leading-relaxed mb-4">
+                                    Soniva 桌面端 0.1.5 发布。Developer ID 签名 + Apple 公证通过。
+                                </p>
+                                <div class="flex justify-end">
+                                    <button class="h-10 w-10 rounded-full border border-border bg-secondary/30 flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
+                                        <i class="ph-bold ph-cube"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片 2 -->
+                    <div class="relative">
+                        <div class="timeline-line"></div>
+                        <div class="absolute left-[-37px] top-1 z-10 h-3.5 w-3.5 rounded-full border-4 border-background bg-muted-foreground"></div>
+                        
+                        <div class="flex flex-col gap-6 md:flex-row">
+                            <div class="md:w-32 flex-shrink-0 pt-1">
+                                <span class="text-sm font-medium text-muted-foreground">9月27日</span>
+                            </div>
+                            
+                            <div class="flex-1 border border-border rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition-shadow">
+                                <div class="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                                    <span class="bg-muted text-muted-foreground px-2 py-0.5 rounded font-medium">开发日志</span>
+                                    <span class="text-foreground">2026-09-27</span>
+                                </div>
+                                <h3 class="text-lg font-semibold mb-2">桌面端开发日志 · 2026-09-27</h3>
+                                <p class="text-muted-foreground text-sm leading-relaxed mb-4">
+                                    当日 4 个提交（新功能 2 个，修复 2 个）。主要涉及：watch-folder、...
+                                </p>
+                                <div class="flex justify-end">
+                                    <button class="h-10 w-10 rounded-full border border-border bg-secondary/30 flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
+                                        <i class="ph-bold ph-file-text"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片 3 -->
+                    <div class="relative">
+                        <div class="timeline-line"></div>
+                        <div class="absolute left-[-37px] top-1 z-10 h-3.5 w-3.5 rounded-full border-4 border-background bg-muted-foreground"></div>
+                        
+                        <div class="flex flex-col gap-6 md:flex-row">
+                            <div class="md:w-32 flex-shrink-0 pt-1">
+                                <span class="text-sm font-medium text-muted-foreground">9月26日</span>
+                            </div>
+                            
+                            <div class="flex-1 border border-border rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition-shadow">
+                                <div class="flex items-center gap-2 text-xs text-muted-foreground mb-3">
+                                    <span class="bg-muted text-muted-foreground px-2 py-0.5 rounded font-medium">开发日志</span>
+                                    <span class="text-foreground">2026-09-26</span>
+                                </div>
+                                <h3 class="text-lg font-semibold mb-2">桌面端开发日志 · 2026-09-26</h3>
+                                <p class="text-muted-foreground text-sm leading-relaxed mb-4">
+                                    当日 24 个提交（修复 11 个，新功能 9 个，文档 3 个，其他 1 个）。主要涉...
+                                </p>
+                                <div class="flex justify-end">
+                                    <button class="h-10 w-10 rounded-full border border-border bg-secondary/30 flex items-center justify-center hover:bg-secondary hover:text-primary transition-colors">
+                                        <i class="ph-bold ph-file-text"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

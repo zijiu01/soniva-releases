@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soniva - 发布版本记录</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            border: "hsl(214.3 31.8% 91.4%)",
+            input: "hsl(214.3 31.8% 91.4%)",
+            ring: "hsl(222.2 84% 4.9%)",
+            background: "hsl(0 0% 100%)",
+            foreground: "hsl(222.2 84% 4.9%)",
+            primary: {
+              DEFAULT: "hsl(222.2 47.4% 11.2%)",
+              foreground: "hsl(210 40% 98%)",
+            },
+            secondary: {
+              DEFAULT: "hsl(210 40% 96.1%)",
+              foreground: "hsl(222.2 47.4% 11.2%)",
+            },
+            muted: {
+              DEFAULT: "hsl(210 40% 96.1%)",
+              foreground: "hsl(215.4 16.3% 46.9%)",
+            },
+          },
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-foreground antialiased selection:bg-black selection:text-white">
+
+  <!-- 1. Header (Shadcn Navbar Style) -->
+  <header class="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur">
+    <div class="container mx-auto max-w-6xl flex h-14 items-center justify-between px-4">
+      <div class="flex items-center gap-6">
+        <a class="flex items-center space-x-2 font-bold text-lg tracking-tight" href="#">
+          <i data-lucide="activity" class="h-5 w-5"></i>
+          <span>Soniva</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
+          <a href="#" class="transition-colors hover:text-foreground">下载</a>
+          <a href="#" class="text-foreground font-semibold">版本记录</a>
+          <a href="#" class="transition-colors hover:text-foreground">文档</a>
+          <a href="#" class="transition-colors hover:text-foreground">定价</a>
+          <a href="#" class="transition-colors hover:text-foreground">协议</a>
+        </nav>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2">
+          进入应用 <i data-lucide="arrow-right" class="ml-2 h-4 w-4"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mx-auto max-w-6xl px-4 py-10 space-y-12">
+    
+    <!-- 2. Hero Section -->
+    <section class="max-w-2xl space-y-4">
+      <div class="inline-flex items-center rounded-full border border-border px-2.5 py-0.5 text-xs font-semibold text-muted-foreground transition-colors hover:bg-secondary">
+        <i data-lucide="terminal" class="mr-1 h-3 w-3"></i> 开发日志
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">记录每一次的进步</h1>
+      <p class="text-muted-foreground text-base leading-relaxed">
+        这里是 Soniva 桌面端的开发日志：版本发布与开发文档汇成一条时间线，可以按日期快速定位，也可以下载最新的发布包。
+      </p>
+      <div class="flex items-center gap-3 pt-2">
+        <button class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 border-border shadow-sm">
+          查看最新日志 <i data-lucide="arrow-down" class="ml-2 h-4 w-4"></i>
+        </button>
+        <button class="inline-flex items-center justify-center rounded-md text-sm font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 border-border shadow-sm">
+          <i data-lucide="download" class="mr-2 h-4 w-4"></i> 下载最新包
+        </button>
+      </div>
+    </section>
+
+    <!-- 3. Main Content Grid (Sidebar + Timeline) -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
+      
+      <!-- Left Sidebar: Filters & Quick Nav -->
+      <aside class="md:col-span-4 space-y-6 md:sticky md:top-20">
+        
+        <!-- Search Input -->
+        <div class="relative">
+          <i data-lucide="search" class="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground"></i>
+          <input type="text" placeholder="搜索日志或关键词..." class="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 pl-8 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
+        </div>
+
+        <!-- Heatmap / Activity Calendar Representation -->
+        <div class="rounded-xl border border-border p-4 bg-card text-card-foreground shadow-sm space-y-3">
+          <div class="flex items-center justify-between text-xs font-medium text-muted-foreground">
+            <span>快速定位 (2026)</span>
+            <span>42 条记录</span>
+          </div>
+          <!-- Simplified Grid Activity -->
+          <div class="grid grid-cols-12 gap-1 pt-1">
+            <div class="h-3 w-3 rounded-sm bg-muted"></div>
+            <div class="h-3 w-3 rounded-sm bg-primary/20"></div>
+            <div class="h-3 w-3 rounded-sm bg-primary/40"></div>
+            <div class="h-3 w-3 rounded-sm bg-primary"></div>
+            <div class="h-3 w-3 rounded-sm bg-muted"></div>
+            <div class="h-3 w-3 rounded-sm bg-primary/60"></div>
+            <div class="h-3 w-3 rounded-sm bg-primary"></div>
+            <div class="h-3 w-3 rounded-sm bg-primary/30"></div>
+            <div class="h-3 w-3 rounded-sm bg-muted"></div>
+            <div class="h-3 w-3 rounded-sm bg-primary"></div>
+            <div class="h-3 w-3 rounded-sm bg-primary/80"></div>
+            <div class="h-3 w-3 rounded-sm bg-primary"></div>
+          </div>
+          <div class="flex justify-between text-[10px] text-muted-foreground pt-1">
+            <span>12月</span><span>1月</span><span>2月</span><span>3月</span><span>9月</span><span>10月</span>
+          </div>
+        </div>
+
+        <!-- Latest Packages Section -->
+        <div class="space-y-3">
+          <h3 class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">最新发布包</h3>
+          <div class="space-y-2">
+            <!-- Package Item -->
+            <div class="flex items-center justify-between p-3 rounded-lg border border-border bg-card hover:bg-accent transition-colors">
+              <div class="flex items-center gap-3">
+                <div class="p-2 bg-secondary rounded-md">
+                  <i data-lucide="package" class="h-4 w-4"></i>
+                </div>
+                <div>
+                  <div class="text-sm font-semibold">v0.1.5</div>
+                  <div class="text-xs text-muted-foreground">2026-09-27</div>
+                </div>
+              </div>
+              <button class="inline-flex items-center justify-center rounded-md text-xs font-medium border border-input h-8 px-3 hover:bg-secondary">
+                <i data-lucide="download" class="h-3.5 w-3.5 mr-1"></i> 下载
+              </button>
+            </div>
+            
+            <!-- Package Item -->
+            <div class="flex items-center justify-between p-3 rounded-lg border border-border bg-card hover:bg-accent transition-colors">
+              <div class="flex items-center gap-3">
+                <div class="p-2 bg-secondary rounded-md">
+                  <i data-lucide="package" class="h-4 w-4"></i>
+                </div>
+                <div>
+                  <div class="text-sm font-semibold">v0.1.4</div>
+                  <div class="text-xs text-muted-foreground">2026-09-25</div>
+                </div>
+              </div>
+              <button class="inline-flex items-center justify-center rounded-md text-xs font-medium border border-input h-8 px-3 hover:bg-secondary">
+                <i data-lucide="download" class="h-3.5 w-3.5 mr-1"></i> 下载
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- Right Content: Clean Timeline -->
+      <section class="md:col-span-8 space-y-8">
+        
+        <div class="flex items-center justify-between border-b border-border pb-3">
+          <h2 class="text-xl font-bold tracking-tight">2026 年 9 月</h2>
+          <span class="text-xs text-muted-foreground">共 32 篇更新记录</span>
+        </div>
+
+        <div class="relative pl-6 space-y-8 before:absolute before:left-2.5 before:top-3 before:bottom-3 before:w-[1px] before:bg-border">
+          
+          <!-- Timeline Item 1: Release -->
+          <div class="relative group">
+            <div class="absolute -left-[19px] top-1.5 h-3.5 w-3.5 rounded-full border-2 border-background bg-primary ring-4 ring-background"></div>
+            <div class="rounded-xl border border-border bg-card p-5 shadow-sm transition-all hover:border-primary/50">
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="inline-flex items-center rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">发布</span>
+                  <span class="inline-flex items-center rounded-md border border-border px-2 py-0.5 text-xs font-medium text-muted-foreground">v0.1.5</span>
+                </div>
+                <time class="text-xs text-muted-foreground">2026-09-27</time>
+              </div>
+              <h3 class="text-lg font-bold tracking-tight mb-2 flex items-center justify-between">
+                Soniva 0.1.5 
+                <i data-lucide="box" class="h-4 w-4 text-muted-foreground"></i>
+              </h3>
+              <p class="text-sm text-muted-foreground leading-relaxed mb-4">
+                Soniva 桌面端 0.1.5 发布。Developer ID 签名 + Apple 公证通过 (Gatekeeper accepted)，双架构 DMG 与自动更新清单 latest-mac.yml 已随 Release 上传。
+              </p>
+              <div class="flex items-center gap-2 pt-2 border-t border-border/50 text-xs text-muted-foreground">
+                <i data-lucide="check-circle-2" class="h-3.5 w-3.5 text-emerald-600"></i> Apple 官方公证通过
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline Item 2: Dev Log -->
+          <div class="relative group">
+            <div class="absolute -left-[19px] top-1.5 h-3.5 w-3.5 rounded-full border-2 border-background bg-muted-foreground/40 ring-4 ring-background"></div>
+            <div class="rounded-xl border border-border bg-card p-5 shadow-sm transition-all hover:border-primary/50">
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="inline-flex items-center rounded-md bg-secondary px-2 py-0.5 text-xs font-medium text-secondary-foreground">开发日志</span>
+                </div>
+                <time class="text-xs text-muted-foreground">2026-09-27</time>
+              </div>
+              <h3 class="text-lg font-bold tracking-tight mb-2 flex items-center justify-between">
+                桌面端开发日志 · 2026-09-27
+                <i data-lucide="file-text" class="h-4 w-4 text-muted-foreground"></i>
+              </h3>
+              <p class="text-sm text-muted-foreground leading-relaxed">
+                当日 4 个提交（新功能 2 个，修复 2 个）。主要涉及组件：<code class="bg-muted px-1.5 py-0.5 rounded text-xs">watch-folder</code>，<code class="bg-muted px-1.5 py-0.5 rounded text-xs">translation</code>。
+              </p>
+            </div>
+          </div>
+
+          <!-- Timeline Item 3: Dev Log -->
+          <div class="relative group">
+            <div class="absolute -left-[19px] top-1.5 h-3.5 w-3.5 rounded-full border-2 border-background bg-muted-foreground/40 ring-4 ring-background"></div>
+            <div class="rounded-xl border border-border bg-card p-5 shadow-sm transition-all hover:border-primary/50">
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="inline-flex items-center rounded-md bg-secondary px-2 py-0.5 text-xs font-medium text-secondary-foreground">开发日志</span>
+                </div>
+                <time class="text-xs text-muted-foreground">2026-09-26</time>
+              </div>
+              <h3 class="text-lg font-bold tracking-tight mb-2 flex items-center justify-between">
+                桌面端开发日志 · 2026-09-26
+                <i data-lucide="code-2" class="h-4 w-4 text-muted-foreground"></i>
+              </h3>
+              <p class="text-sm text-muted-foreground leading-relaxed">
+                当日 24 个提交（修复 11 个，新功能 9 个，文档 3 个，其他 1 个）。主要涉及：桌面端、素材库、空格预览。
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>

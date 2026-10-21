@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soniva - 开发日志与版本更新历史</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        border: 'hsl(var(--border))',
+                        input: 'hsl(var(--input))',
+                        ring: 'hsl(var(--ring))',
+                        background: 'hsl(var(--background))',
+                        foreground: 'hsl(var(--foreground))',
+                        primary: {
+                            DEFAULT: 'hsl(var(--primary))',
+                            foreground: 'hsl(var(--primary-foreground))',
+                        },
+                        secondary: {
+                            DEFAULT: 'hsl(var(--secondary))',
+                            foreground: 'hsl(var(--secondary-foreground))',
+                        },
+                        muted: {
+                            DEFAULT: 'hsl(var(--muted))',
+                            foreground: 'hsl(var(--muted-foreground))',
+                        },
+                        accent: {
+                            DEFAULT: 'hsl(var(--accent))',
+                            foreground: 'hsl(var(--accent-foreground))',
+                        },
+                        card: {
+                            DEFAULT: 'hsl(var(--card))',
+                            foreground: 'hsl(var(--card-foreground))',
+                        },
+                    },
+                    borderRadius: {
+                        lg: '0.6rem',
+                        md: '0.45rem',
+                        sm: '0.3rem',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace']
+                    },
+                    keyframes: {
+                        'slide-in-right': {
+                            '0%': { transform: 'translateX(100%)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        'fade-in': {
+                            '0%': { opacity: '0', transform: 'scale(0.98)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        }
+                    },
+                    animation: {
+                        'slide-in': 'slide-in-right 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                        'fade-in': 'fade-in 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @layer base {
+            :root {
+                --background: 0 0% 100%;
+                --foreground: 240 10% 3.9%;
+                --card: 0 0% 100%;
+                --card-foreground: 240 10% 3.9%;
+                --primary: 240 5.9% 10%;
+                --primary-foreground: 0 0% 98%;
+                --secondary: 240 4.8% 95.9%;
+                --secondary-foreground: 240 5.9% 10%;
+                --muted: 240 4.8% 95.9%;
+                --muted-foreground: 240 3.8% 46.1%;
+                --accent: 240 4.8% 95.9%;
+                --accent-foreground: 240 5.9% 10%;
+                --border: 240 5.9% 90%;
+                --input: 240 5.9% 90%;
+                --ring: 240 5.9% 10%;
+            }
+            .dark {
+                --background: 240 10% 3.9%;
+                --foreground: 0 0% 98%;
+                --card: 240 10% 3.9%;
+                --card-foreground: 0 0% 98%;
+                --primary: 0 0% 98%;
+                --primary-foreground: 240 5.9% 10%;
+                --secondary: 240 3.7% 15.9%;
+                --secondary-foreground: 0 0% 98%;
+                --muted: 240 3.7% 15.9%;
+                --muted-foreground: 240 5% 64.9%;
+                --accent: 240 3.7% 15.9%;
+                --accent-foreground: 0 0% 98%;
+                --border: 240 3.7% 15.9%;
+                --input: 240 3.7% 15.9%;
+                --ring: 240 4.9% 83.9%;
+            }
+        }
+
+        body {
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+            scroll-behavior: smooth;
+        }
+
+        /* Subtle Noise background */
+        .bg-grid-pattern {
+            background-size: 32px 32px;
+            background-image: 
+                linear-gradient(to right, rgba(120, 120, 120, 0.06) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(120, 120, 120, 0.06) 1px, transparent 1px);
+        }
+
+        /* Glassmorphism utility */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+        }
+        .dark .glass-panel {
+            background: rgba(10, 10, 12, 0.75);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-background font-sans antialiased text-foreground selection:bg-neutral-900 selection:text-white dark:selection:bg-white dark:selection:text-neutral-900">
+
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <header class="sticky top-0 z-40 w-full border-b border-border glass-panel">
+        <div class="max-w-7xl mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+            <!-- Brand Logo & Main Links -->
+            <div class="flex items-center gap-8">
+                <a href="#" class="flex items-center gap-2.5 group focus:outline-none focus:ring-2 focus:ring-ring rounded-lg p-1">
+                    <div class="h-8 w-8 rounded-lg bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 flex items-center justify-center font-bold text-sm shadow-sm transition-transform group-hover:scale-105">
+                        S
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-bold text-base tracking-tight leading-none">Soniva</span>
+                        <span class="text-[10px] text-muted-foreground font-mono">Dev Log</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
+                    <a href="#" class="hover:text-foreground transition-colors">下载应用</a>
+                    <a href="#" class="text-foreground font-semibold flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                        更新日志
+                    </a>
+                    <a href="#" class="hover:text-foreground transition-colors">开发者文档</a>
+                    <a href="#" class="hover:text-foreground transition-colors">路线图</a>
+                </nav>
+            </div>
+
+            <!-- Right Controls -->
+            <div class="flex items-center gap-3">
+                <!-- Platform Indicator Pill -->
+                <div id="platformBadge" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs bg-secondary text-secondary-foreground border border-border">
+                    <svg class="w-3.5 h-3.5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    <span id="detectedOS">macOS Apple Silicon</span>
+                </div>
+
+                <!-- Theme Toggle Button -->
+                <button id="themeToggle" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground h-9 w-9 border border-border focus:ring-2 focus:ring-ring" title="切换暗黑模式">
+                    <svg id="sunIcon" class="h-4 w-4 hidden dark:block text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg id="moonIcon" class="h-4 w-4 block dark:hidden text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                </button>
+
+                <!-- Action Button -->
+                <a href="#releases" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-all focus:ring-2 focus:ring-ring bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 h-9 px-4 py-2 gap-2 hover:scale-[1.02] active:scale-[0.98]">
+                    <span>获取最新版</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section class="relative overflow-hidden border-b border-border bg-grid-pattern py-14 lg:py-18">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                
+                <!-- Left Title Content -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-card text-xs font-medium text-foreground shadow-xs">
+                        <span class="flex h-2 w-2 rounded-full bg-emerald-500 animate-ping"></span>
+                        <span>Soniva v0.1.5 已公测</span>
+                        <span class="text-muted-foreground">·</span>
+                        <span class="text-muted-foreground font-mono">2026-09-27</span>
+                    </div>
+
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground leading-[1.15]">
+                        记录 Soniva 的<br>
+                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-neutral-900 via-neutral-700 to-neutral-500 dark:from-white dark:via-neutral-200 dark:to-neutral-400">每一次透明进化</span>
+                    </h1>
+
+                    <p class="text-base text-muted-foreground max-w-xl leading-relaxed">
+                        这里汇总了 Soniva 桌面端及底层核心的开发进展、Git 提交履历以及稳定版本发布。无论是全新功能重构还是微小的 Bug 修复，均实时可查。
+                    </p>
+
+                    <!-- Quick Stats Badges -->
+                    <div class="pt-2 flex flex-wrap gap-6 border-t border-border/80">
+                        <div>
+                            <div class="text-2xl font-bold font-mono tracking-tight">v0.1.5</div>
+                            <div class="text-xs text-muted-foreground">当前稳定版本</div>
+                        </div>
+                        <div class="w-px h-8 bg-border my-auto"></div>
+                        <div>
+                            <div class="text-2xl font-bold font-mono tracking-tight text-emerald-600 dark:text-emerald-400">99.8%</div>
+                            <div class="text-xs text-muted-foreground">单元测试通过率</div>
+                        </div>
+                        <div class="w-px h-8 bg-border my-auto"></div>
+                        <div>
+                            <div class="text-2xl font-bold font-mono tracking-tight">142</div>
+                            <div class="text-xs text-muted-foreground">本月 Commit 提交</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Visual Mockup (macOS Window) -->
+                <div class="lg:col-span-5">
+                    <div class="rounded-xl border border-border bg-card shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300">
+                        <!-- macOS Titlebar -->
+                        <div class="px-4 py-3 bg-muted/60 border-b border-border flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                            </div>
+                            <div class="text-xs font-mono text-muted-foreground flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457-.39-2.823-1.07-4"/></svg>
+                                Terminal · soniva-desktop-v0.1.5
+                            </div>
+                            <div class="w-10"></div>
+                        </div>
+
+                        <!-- Code Preview Content -->
+                        <div class="p-5 font-mono text-xs space-y-3 bg-neutral-950 text-neutral-200 overflow-x-auto">
+                            <div class="flex gap-2">
+                                <span class="text-emerald-400">➜</span>
+                                <span class="text-sky-400">soniva-cli</span>
+                                <span class="text-neutral-400">git log --oneline -n 3</span>
+                            </div>
+                            <div class="space-y-1 text-neutral-400 pl-4 border-l border-neutral-800">
+                                <div><span class="text-amber-400 font-bold">a8f9c12</span> feat(watchdog): add file stream queue throttle</div>
+                                <div><span class="text-amber-400 font-bold">4b11e90</span> fix(win32): resolve path separator bug on Windows 11</div>
+                                <div><span class="text-amber-400 font-bold">92c81e3</span> release: bump version to v0.1.5 [signed]</div>
+                            </div>
+                            <div class="flex items-center gap-2 text-emerald-400 pt-2 border-t border-neutral-800/80">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                <span>Build Verification Successful. Apple Notary Passed.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <aside class="lg:col-span-4 space-y-6">
+                
+                <!-- Search Input Widget -->
+                <div class="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3">
+                    <label for="searchInput" class="text-xs font-semibold text-foreground flex items-center justify-between">
+                        <span>搜索日志记录</span>
+                        <span class="text-[10px] text-muted-foreground font-mono">⌘K</span>
+                    </label>
+                    <div class="relative">
+                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        <input type="text" id="searchInput" placeholder="搜索版本号、功能点、Commit Hash..." class="w-full h-9 pl-9 pr-8 rounded-md border border-input bg-background text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all">
+                        <button id="clearSearch" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Category Filters Badge List -->
+                <div class="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3">
+                    <div class="text-xs font-semibold text-foreground">类型筛选</div>
+                    <div class="flex flex-wrap gap-1.5" id="tagFilters">
+                        <button data-filter="all" class="filter-btn active text-xs px-3 py-1.5 rounded-md font-medium border border-primary bg-primary text-primary-foreground transition-all">全部</button>
+                        <button data-filter="release" class="filter-btn text-xs px-3 py-1.5 rounded-md font-medium border border-border bg-background text-muted-foreground hover:bg-accent hover:text-foreground transition-all">🚀 版本发布</button>
+                        <button data-filter="devlog" class="filter-btn text-xs px-3 py-1.5 rounded-md font-medium border border-border bg-background text-muted-foreground hover:bg-accent hover:text-foreground transition-all">📝 日志概览</button>
+                        <button data-filter="feature" class="filter-btn text-xs px-3 py-1.5 rounded-md font-medium border border-border bg-background text-muted-foreground hover:bg-accent hover:text-foreground transition-all">✨ 新功能</button>
+                        <button data-filter="fix" class="filter-btn text-xs px-3 py-1.5 rounded-md font-medium border border-border bg-background text-muted-foreground hover:bg-accent hover:text-foreground transition-all">🐛 Bug修复</button>
+                    </div>
+                </div>
+
+                <!-- Contribution Heatmap Widget -->
+                <div class="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3">
+                    <div class="flex items-center justify-between border-b border-border pb-2.5">
+                        <div class="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <span>提交热度 (2026)</span>
+                        </div>
+                        <span class="text-[10px] font-mono text-muted-foreground">9月活跃峰值</span>
+                    </div>
+
+                    <!-- Interactive Heatmap Grid -->
+                    <div class="space-y-2">
+                        <div class="grid grid-cols-6 gap-1.5 text-center text-[11px]">
+                            <button class="month-btn p-1.5 rounded border border-border hover:bg-accent opacity-50">4月</button>
+                            <button class="month-btn p-1.5 rounded border border-border hover:bg-accent opacity-50">5月</button>
+                            <button class="month-btn p-1.5 rounded border border-border hover:bg-accent opacity-60">6月</button>
+                            <button class="month-btn p-1.5 rounded border border-border hover:bg-accent opacity-70">7月</button>
+                            <button class="month-btn p-1.5 rounded border border-border hover:bg-accent opacity-80">8月</button>
+                            <button class="month-btn active p-1.5 rounded border border-primary bg-primary/10 text-primary font-bold">9月</button>
+                        </div>
+
+                        <!-- Commit Dots -->
+                        <div class="pt-2">
+                            <div class="flex justify-between text-[10px] text-muted-foreground mb-1.5">
+                                <span>9月 1日 - 9月 27日</span>
+                                <span>高活跃度</span>
+                            </div>
+                            <div class="grid grid-cols-12 gap-1 text-center" id="heatmapGrid">
+                                <!-- JS will populate heatmap tooltips dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Latest Release Downloads Widget -->
+                <div id="releases" class="rounded-xl border border-border bg-card p-4 shadow-xs space-y-3">
+                    <div class="flex items-center justify-between border-b border-border pb-2.5">
+                        <div class="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                            <span>快捷下载客户端</span>
+                        </div>
+                        <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">Apple Signed</span>
+                    </div>
+
+                    <div class="space-y-2">
+                        <!-- macOS -->
+                        <a href="#" onclick="triggerToast('开始下载 Soniva v0.1.5 (macOS Universal)...')" class="p-2.5 rounded-lg border border-border bg-background hover:bg-accent hover:border-primary/40 flex items-center justify-between group transition-all">
+                            <div class="flex items-center gap-2.5">
+                                <div class="p-2 rounded bg-muted text-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.85c.66-.8 1.11-1.92.99-3.04-.96.04-2.13.64-2.82 1.44-.61.71-1.14 1.86-1 2.98 1.08.08 2.17-.58 2.83-1.38z"/></svg>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-semibold">macOS 客户端 (v0.1.5)</div>
+                                    <div class="text-[10px] text-muted-foreground">Universal DMG · 84.2 MB</div>
+                                </div>
+                            </div>
+                            <svg class="w-4 h-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </a>
+
+                        <!-- Windows -->
+                        <a href="#" onclick="triggerToast('开始下载 Soniva v0.1.5 (Windows x64)...')" class="p-2.5 rounded-lg border border-border bg-background hover:bg-accent hover:border-primary/40 flex items-center justify-between group transition-all">
+                            <div class="flex items-center gap-2.5">
+                                <div class="p-2 rounded bg-muted text-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M0 3.449L9.75 2.1v9.451H0m10.95-9.6L24 0v11.4H10.95M0 12.6h9.75v9.451L0 20.699M10.95 12.6H24V24l-13.05-1.835"/></svg>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-semibold">Windows 客户端 (v0.1.5)</div>
+                                    <div class="text-[10px] text-muted-foreground">x64 Installer · 91.0 MB</div>
+                                </div>
+                            </div>
+                            <svg class="w-4 h-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+            </aside>
+
+            <section class="lg:col-span-8 space-y-6">
+                
+                <!-- Section Header -->
+                <div class="flex items-center justify-between border-b border-border pb-3">
+                    <div class="flex items-center gap-3">
+                        <h2 class="text-xl font-bold tracking-tight">2026年 9月</h2>
+                        <span id="logCountBadge" class="px-2.5 py-0.5 text-xs font-mono rounded-full bg-secondary text-secondary-foreground border border-border">4 条记录</span>
+                    </div>
+                    <button id="copyTimelineSummary" class="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        复制本月更新摘要
+                    </button>
+                </div>
+
+                <!-- Empty State Alert (Hidden by default) -->
+                <div id="emptyState" class="hidden p-12 text-center rounded-xl border border-dashed border-border bg-card/50 space-y-3">
+                    <div class="mx-auto w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </div>
+                    <div class="text-sm font-semibold">未找到匹配的日志</div>
+                    <div class="text-xs text-muted-foreground max-w-sm mx-auto">请尝试更换搜索关键字，或重置筛选标签。</div>
+                    <button onclick="resetFilters()" class="text-xs text-primary font-medium underline">重置所有筛选条件</button>
+                </div>
+
+                <!-- Timeline Feed -->
+                <div class="relative pl-6 sm:pl-8 border-l-2 border-border/80 space-y-8" id="logContainer">
+
+                    <!-- ITEM 1: RELEASE v0.1.5 -->
+                    <article class="log-item relative group" data-type="release" data-tags="feature,release">
+                        <!-- Node Bullet Icon -->
+                        <div class="absolute -left-[31px] sm:-left-[39px] top-1.5 h-5 w-5 rounded-full border-2 border-primary bg-background flex items-center justify-center group-hover:scale-125 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-primary group-hover:bg-primary-foreground"></span>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                                <span class="font-bold text-foreground">9月27日</span>
+                                <span>•</span>
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    版本发布 v0.1.5
+                                </span>
+                                <span>•</span>
+                                <span class="font-mono text-muted-foreground">Hash: #a8f9c12</span>
+                            </div>
+
+                            <div class="rounded-xl border border-border bg-card p-5 shadow-xs hover:shadow-md hover:border-border/80 transition-all">
+                                <div class="flex items-start justify-between gap-4">
+                                    <div class="space-y-2">
+                                        <h3 class="text-base sm:text-lg font-bold text-foreground flex items-center gap-2">
+                                            Soniva 桌面端 0.1.5 正式上线
+                                        </h3>
+                                        <p class="text-sm text-muted-foreground leading-relaxed">
+                                            重磅更新！包含全新的文件系统 Watchdog 调度管道、原生指令集加固，并完全通过 Apple Developer ID 签名与云端公证。
+                                        </p>
+                                    </div>
+                                    <button onclick="openModal('modal-015')" class="shrink-0 text-xs font-medium px-3 py-1.5 rounded-md border border-border bg-secondary text-secondary-foreground hover:bg-accent transition-colors flex items-center gap-1">
+                                        查看 Release Notes
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                    </button>
+                                </div>
+
+                                <div class="mt-4 pt-3 border-t border-border flex flex-wrap gap-2 text-xs">
+                                    <span class="px-2 py-0.5 rounded bg-muted text-muted-foreground font-mono">Watchdog Queue</span>
+                                    <span class="px-2 py-0.5 rounded bg-muted text-muted-foreground font-mono">macOS / Win32</span>
+                                    <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">零内存泄露验证</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- ITEM 2: DEV LOG 09-27 -->
+                    <article class="log-item relative group" data-type="devlog" data-tags="devlog,feature,fix">
+                        <div class="absolute -left-[31px] sm:-left-[39px] top-1.5 h-5 w-5 rounded-full border-2 border-border bg-background flex items-center justify-center group-hover:border-primary group-hover:scale-125 transition-all duration-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground"></span>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2 text-xs text-muted-foreground">
+                                <span class="font-bold text-foreground">9月27日</span>
+                                <span>•</span>
+                                <span class="px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground font-medium border border-border">📝 日志概览</span>
+                            </div>
+
+                            <div class="rounded-xl border border-border bg-card p-5 shadow-xs hover:shadow-md transition-all">
+                                <div class="flex items-start justify-between gap-4">
+                                    <div class="space-y-2">
+                                        <h3 class="text-base font-bold text-foreground">桌面端开发日志 · 2026-09-27</h3>
+                                        <p class="text-sm text-muted-foreground leading-relaxed">
+                                            本日共计提交 <strong>4 个 Commit</strong>。重点优化了对超大目录进行扫描时的 UI 阻塞逻辑，将其解耦至 Web Worker 线程处理。
+                                        </p>
+                                    </div>
+                                    <div class="hidden sm:flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-muted/40">
+                                        <svg class="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs border-t border-border pt-3">
+                                    <div class="flex items-center gap-2 text-muted-foreground">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                        <span>新增 watch-folder 异步线程调度器</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-muted-foreground">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                        <span>修复拖拽文件入框时丢失扩展名的边缘错误</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- ITEM 3: DEV LOG 09-26 -->
+                    <article class="log-item relative group" data-type="devlog" data-tags="devlog,fix">
+                        <div class="absolute -left-[31px] sm:-left-[39px] top-1.5 h-5 w-5 rounded-full border-2 border-border bg-background flex items-center justify-center group-hover:border-primary group-hover:scale-125 transition-all duration-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground"></span>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2 text-xs text-muted-foreground">
+                                <span class="font-bold text-foreground">9月26日</span>
+                                <span>•</span>
+                                <span class="px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground font-medium border border-border">📝 日志概览</span>
+                            </div>
+
+                            <div class="rounded-xl border border-border bg-card p-5 shadow-xs hover:shadow-md transition-all">
+                                <div class="flex items-start justify-between gap-4">
+                                    <div class="space-y-2">
+                                        <h3 class="text-base font-bold text-foreground">桌面端开发日志 · 2026-09-26</h3>
+                                        <p class="text-sm text-muted-foreground leading-relaxed">
+                                            本日进行全天候密集重构，完成 <strong>24 个 Commit 提交</strong>（修复 11 个，新功能 9 个，文档 3 个，其他 1 个）。重构项目 UI 层为 shadcn 组件设计标准。
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 flex flex-wrap gap-2 text-xs">
+                                    <span class="px-2.5 py-1 rounded bg-amber-500/10 text-amber-700 dark:text-amber-400 font-mono">11 Bugfixes</span>
+                                    <span class="px-2.5 py-1 rounded bg-sky-500/10 text-sky-600 dark:text-sky-400 font-mono">9 New Features</span>
+                                    <span class="px-2.5 py-1 rounded bg-accent text-muted-foreground font-mono">3 Documentation</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- ITEM 4: RELEASE v0.1.4 -->
+                    <article class="log-item relative group" data-type="release" data-tags="release">
+                        <div class="absolute -left-[31px] sm:-left-[39px] top-1.5 h-5 w-5 rounded-full border-2 border-primary bg-background flex items-center justify-center group-hover:scale-125 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2 text-xs text-muted-foreground">
+                                <span class="font-bold text-foreground">9月25日</span>
+                                <span>•</span>
+                                <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-medium border border-emerald-500/20">🚀 版本发布 v0.1.4</span>
+                            </div>
+
+                            <div class="rounded-xl border border-border bg-card p-5 shadow-xs hover:shadow-md transition-all">
+                                <div class="space-y-2">
+                                    <h3 class="text-base font-bold text-foreground">Soniva 0.1.4 补丁更新</h3>
+                                    <p class="text-sm text-muted-foreground leading-relaxed">
+                                        修复了高分辨率 DPI 显示器下字体微模糊的问题，更新了 Windows 版本的数字安全签名。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="modal-015" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animation-fade-in" onclick="closeModalOnBackdrop(event, 'modal-015')">
+        <div class="bg-card border border-border rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col animate-slide-in">
+            <!-- Modal Header -->
+            <div class="p-5 border-b border-border flex items-center justify-between bg-muted/40">
+                <div class="flex items-center gap-2">
+                    <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">v0.1.5 Release</span>
+                    <h3 class="text-base font-bold">Soniva 0.1.5 详细发布日志</h3>
+                </div>
+                <button onclick="closeModal('modal-015')" class="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- Modal Content Body -->
+            <div class="p-6 overflow-y-auto space-y-5 text-sm">
+                <div>
+                    <h4 class="font-bold text-foreground text-sm mb-2">🚀 核心更新亮点</h4>
+                    <ul class="list-disc pl-5 space-y-1.5 text-muted-foreground">
+                        <li><strong>Watchdog 事件缓冲</strong>：全新文件监听引擎，在拥有数十万文件的项目中提升 400% 索引性能。</li>
+                        <li><strong>Apple Notarized 认证</strong>：集成 macOS 官方公证流程，规避系统安全拦截提示。</li>
+                        <li><strong>shadcn/ui 设计契合</strong>：全面替换基础 UI 资产为高清晰度 Design Tokens。</li>
+                    </ul>
+                </div>
+
+                <div class="p-4 rounded-lg bg-muted/60 border border-border font-mono text-xs space-y-2">
+                    <div class="text-muted-foreground font-semibold">Commit Hash SHA-256 Checksum:</div>
+                    <div class="text-foreground select-all break-all">a8f9c12b84e101d29fa839d48b11e90219c01824c92a</div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-foreground text-sm mb-2">📦 包含的二进制构建镜像</h4>
+                    <div class="space-y-2">
+                        <div class="p-3 rounded border border-border flex justify-between items-center text-xs">
+                            <span>Soniva-0.1.5-macOS-universal.dmg</span>
+                            <span class="font-mono text-muted-foreground">84.2 MB</span>
+                        </div>
+                        <div class="p-3 rounded border border-border flex justify-between items-center text-xs">
+                            <span>Soniva-0.1.5-Windows-x64-Setup.exe</span>
+                            <span class="font-mono text-muted-foreground">91.0 MB</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-border bg-muted/20 flex justify-end gap-2">
+                <button onclick="closeModal('modal-015')" class="px-4 py-2 rounded-md border border-border text-xs font-medium hover:bg-accent transition-colors">关闭</button>
+                <button onclick="triggerToast('正在下载 Soniva v0.1.5 二进制包...')" class="px-4 py-2 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors">立即下载此版本</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="border-t border-border mt-20 bg-background py-8 text-xs text-muted-foreground">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <div class="h-4 w-4 rounded bg-foreground text-background flex items-center justify-center text-[10px] font-bold">S</div>
+                <span>© 2026 Soniva Inc. 保留所有权利。</span>
+            </div>
+            <div class="flex gap-6">
+                <a href="#" class="hover:text-foreground transition-colors">服务条款</a>
+                <a href="#" class="hover:text-foreground transition-colors">隐私策略</a>
+                <a href="#" class="hover:text-foreground transition-colors">Open Source Attributions</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // OS Detection
+        (function detectOS() {
+            const userAgent = window.navigator.userAgent;
+            const detectedOSEl = document.getElementById('detectedOS');
+            if (userAgent.includes("Mac")) {
+                detectedOSEl.textContent = "macOS Universal";
+            } else if (userAgent.includes("Win")) {
+                detectedOSEl.textContent = "Windows x64";
+            } else if (userAgent.includes("Linux")) {
+                detectedOSEl.textContent = "Linux x64";
+            } else {
+                detectedOSEl.textContent = "桌面端系统";
+            }
+        })();
+
+        // Theme Switcher Logic
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                htmlElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Initialize Theme preference
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlElement.classList.add('dark');
+        } else {
+            htmlElement.classList.remove('dark');
+        }
+
+        // Generate Interactive Contribution Heatmap
+        (function renderHeatmap() {
+            const grid = document.getElementById('heatmapGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            // Generate 24 dummy days for September
+            const intensities = [1, 2, 0, 4, 3, 2, 0, 1, 5, 4, 3, 2, 0, 2, 4, 5, 3, 1, 0, 3, 4, 5, 2, 4];
+            const colors = [
+                'bg-muted',
+                'bg-emerald-300 dark:bg-emerald-950',
+                'bg-emerald-400 dark:bg-emerald-800',
+                'bg-emerald-500 dark:bg-emerald-600',
+                'bg-emerald-600 dark:bg-emerald-500',
+                'bg-emerald-500 font-bold ring-1 ring-primary'
+            ];
+
+            intensities.forEach((intensity, idx) => {
+                const day = idx + 1;
+                const dot = document.createElement('div');
+                dot.className = `h-3.5 rounded-sm ${colors[intensity]} transition-transform hover:scale-125 cursor-pointer`;
+                dot.title = `9月${day}日: ${intensity * 3 + 1} 次 Commit 提交`;
+                dot.onclick = () => triggerToast(`9月${day}日 共录得 ${intensity * 3 + 1} 次代码提交`);
+                grid.appendChild(dot);
+            });
+        })();
+
+        // Live Search & Tag Filter Logic
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchBtn = document.getElementById('clearSearch');
+        const logItems = document.querySelectorAll('.log-item');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const emptyState = document.getElementById('emptyState');
+        const logCountBadge = document.getElementById('logCountBadge');
+
+        function applyFilters() {
+            const query = searchInput.value.toLowerCase().trim();
+            const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+            let visibleCount = 0;
+
+            if (query.length > 0) {
+                clearSearchBtn.classList.remove('hidden');
+            } else {
+                clearSearchBtn.classList.add('hidden');
+            }
+
+            logItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                const itemType = item.getAttribute('data-type');
+                const itemTags = item.getAttribute('data-tags') || '';
+
+                const matchesSearch = text.includes(query);
+                const matchesFilter = activeFilter === 'all' || itemType === activeFilter || itemTags.includes(activeFilter);
+
+                if (matchesSearch && matchesFilter) {
+                    item.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            logCountBadge.textContent = `${visibleCount} 条记录`;
+
+            if (visibleCount === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+            }
+        }
+
+        searchInput.addEventListener('input', applyFilters);
+
+        clearSearchBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            applyFilters();
+            searchInput.focus();
+        });
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => {
+                    b.classList.remove('active', 'border-primary', 'bg-primary', 'text-primary-foreground');
+                    b.classList.add('border-border', 'bg-background', 'text-muted-foreground');
+                });
+
+                btn.classList.add('active', 'border-primary', 'bg-primary', 'text-primary-foreground');
+                btn.classList.remove('border-border', 'bg-background', 'text-muted-foreground');
+
+                applyFilters();
+            });
+        });
+
+        function resetFilters() {
+            searchInput.value = '';
+            const allBtn = document.querySelector('.filter-btn[data-filter="all"]');
+            if (allBtn) allBtn.click();
+        }
+
+        // Keyboard Shortcut ⌘K / Ctrl+K to search
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+        });
+
+        // Toast Notification Trigger
+        function triggerToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'pointer-events-auto flex items-center gap-2 rounded-lg bg-foreground text-background text-xs px-4 py-3 shadow-lg border border-border animate-fade-in';
+            toast.innerHTML = `
+                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Copy Timeline Summary Handler
+        document.getElementById('copyTimelineSummary').addEventListener('click', () => {
+            const text = "Soniva 2026年9月更新摘要：\n1. v0.1.5 发布，集成全新 Watchdog 索引队列；\n2. 适配 macOS Apple Silicon 原生指令集；\n3. 全面重构 UI 为 shadcn 标准范式。";
+            
+            // Clipboard copy execution
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = text;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+
+            triggerToast('已成功复制 9 月更新摘要到剪贴板！');
+        });
+
+        // Modal Dialog Handler
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function closeModalOnBackdrop(e, modalId) {
+            if (e.target.id === modalId) {
+                closeModal(modalId);
+            }
+        }
+    </script>
+</body>
+</html>
