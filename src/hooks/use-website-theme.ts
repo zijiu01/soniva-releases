@@ -19,14 +19,14 @@ function resolveTheme(mode: ThemeMode): Theme {
 }
 function readThemeMode(): ThemeMode {
   const shared = readSharedCookie(themeKey);
-  if (shared === "light" || shared === "dark" || shared === "system") return shared;
-  const legacy = localStorage.getItem(legacyThemeKey);
+  if (shared === "light" || shared === "dark" || shared === "system") { writeSharedCookie(themeKey, shared); return shared; }
+  let legacy: string | null = null;
+  try { legacy = localStorage.getItem(legacyThemeKey); } catch { /* Cookie-only mode. */ }
   if (legacy === "light" || legacy === "dark") {
     writeSharedCookie(themeKey, legacy);
     return legacy;
   }
-  // 视觉规范：默认浅色主题。
-  return "light";
+  return "system";
 }
 
 export function useWebsiteTheme() {
@@ -43,15 +43,20 @@ export function useWebsiteTheme() {
     sync();
     window.addEventListener("storage", sync);
     window.addEventListener(themeEvent, sync);
+    window.addEventListener("focus", sync);
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    media.addEventListener("change", sync);
     return () => {
       window.removeEventListener("storage", sync);
       window.removeEventListener(themeEvent, sync);
+      window.removeEventListener("focus", sync);
+      media.removeEventListener("change", sync);
     };
   }, []);
   const toggleTheme = () => {
     const next: ThemeMode = mode === "light" ? "dark" : mode === "dark" ? "system" : "light";
     writeSharedCookie(themeKey, next);
-    localStorage.removeItem(legacyThemeKey);
+    try { localStorage.removeItem(legacyThemeKey); } catch { /* Cookie-only mode. */ }
     setMode(next);
     const nextTheme = resolveTheme(next);
     setTheme(nextTheme);

@@ -11,23 +11,9 @@
  */
 
 import { site } from "@/lib/site";
+import { trackWebsiteEvent, measurementId } from "@/lib/website-analytics";
 
-export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-MY14R4KCP5";
-
-type GtagFn = (...args: unknown[]) => void;
-
-function getGtag(): GtagFn | null {
-  if (typeof window === "undefined") return null;
-  const gtag = (window as unknown as { gtag?: GtagFn }).gtag;
-  return typeof gtag === "function" ? gtag : null;
-}
-
-/** GA4 事件（需同意条已接受，否则 gtag 未加载、这里什么都不发）。 */
-export function trackGtagEvent(eventName: string, params: Record<string, string | number>) {
-  const gtag = getGtag();
-  if (!gtag) return;
-  gtag("event", eventName, params);
-}
+export const GA_MEASUREMENT_ID = measurementId;
 
 export interface DownloadEventData {
   version: string;
@@ -50,12 +36,10 @@ export function reportDownloadEvent(data: DownloadEventData): void {
     version: data.version.slice(0, 32),
     referrer: `${window.location.pathname} [${data.locale}]`.slice(0, 200),
   });
-  trackGtagEvent("download_click", {
-    version: data.version.slice(0, 32),
-    platform: data.platform.slice(0, 32),
-    arch: data.arch.slice(0, 32),
-    file_name: data.filename.slice(0, 128),
-    page_path: window.location.pathname.slice(0, 256),
+  const from = new URLSearchParams(window.location.search).get("from");
+  trackWebsiteEvent("installer_download", {
+    source: from && /^[a-z0-9-]{1,64}$/i.test(from) ? from : "direct",
+    arch: /arm64/i.test(data.filename) ? "arm64" : "x64",
   });
   const url = `${site.appUrl}/api/downloads/track`;
   // sendBeacon：字符串 body 以 text/plain 发送（简单请求无预检），跳转不丢请求；

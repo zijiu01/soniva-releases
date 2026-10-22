@@ -11,8 +11,9 @@ const WebsiteLocaleContext = createContext<{ locale: Locale; toggleLocale: () =>
 
 function readLocale(): Locale {
   const shared = readSharedCookie(localeKey);
-  if (shared === "zh-CN" || shared === "en-US") return shared;
-  const legacy = localStorage.getItem(legacyLocaleKey);
+  if (shared === "zh-CN" || shared === "en-US") { writeSharedCookie(localeKey, shared); return shared; }
+  let legacy: string | null = null;
+  try { legacy = localStorage.getItem(legacyLocaleKey); } catch { /* Cookie-only mode. */ }
   if (legacy === "zh-CN" || legacy === "en-US") {
     writeSharedCookie(localeKey, legacy);
     return legacy;
@@ -23,20 +24,23 @@ function readLocale(): Locale {
 export function WebsiteLocaleProvider({ initialLocale, children }: { initialLocale: Locale; children: ReactNode }) {
   const [locale, setLocale] = useState<Locale>(initialLocale);
   useEffect(() => {
-    const sync = () => setLocale(readLocale());
+    const sync = () => { const next = readLocale(); setLocale(next); document.documentElement.lang = next; };
     sync();
     window.addEventListener("storage", sync);
     window.addEventListener(localeEvent, sync);
+    window.addEventListener("focus", sync);
     return () => {
       window.removeEventListener("storage", sync);
       window.removeEventListener(localeEvent, sync);
+      window.removeEventListener("focus", sync);
     };
   }, []);
   const toggleLocale = () => {
     const next = locale === "zh-CN" ? "en-US" : "zh-CN";
     writeSharedCookie(localeKey, next);
-    localStorage.removeItem(legacyLocaleKey);
+    try { localStorage.removeItem(legacyLocaleKey); } catch { /* Cookie-only mode. */ }
     setLocale(next);
+    document.documentElement.lang = next;
     window.dispatchEvent(new Event(localeEvent));
   };
   return createElement(WebsiteLocaleContext.Provider, { value: { locale, toggleLocale } }, children);

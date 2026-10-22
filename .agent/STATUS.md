@@ -8,6 +8,7 @@
 | 项 | 状态 |
 |---|---|
 | 仓库性质 | 公开分发仓库，只放展示层与文档 |
+| 五站改版第6批（2026-10-22） | 共用壳来自官网 site-shell，浏览器端读 .soniva.uk 语言/主题/同意Cookie；包下载补统一GA4芯片事件，保留原匿名后端计数。正文、资产与发版脚本未动；全局进度记官网 .agent/sites-revamp-progress.md；静态导出语言需水合后读取，跨站无闪烁/GA4后台未实测 |
 | 网站 | ✅ DevLog 两栏（shadcn 中性风）：Hero + 快速定位频率图（每天一颗方块、按年折叠、月份倒序）/搜索/最新发布包 ｜ 月度分组卡片流（**卡片示意图已停用**，回退图标块）；卡片点击新标签打开详情页；新增本地 /terms 使用条款页（照录官网 legal markdown）；文档照录桌面端仓库原始 md（展示层滤 emoji）；导航/页脚保持不动 |
 | 匿名统计（2026-10-02） | ✅ ①下载点击 → `sendBeacon` POST web 生产 `/api/downloads/track`（契约在 web 仓库该路由顶部），落 web 库 `download_events` 表（9-23 已建，站点不直连 PostgREST——那张表只收服务端写入）；②GA4（复用主站 G-MY14R4KCP5，`NEXT_PUBLIC_GA_MEASUREMENT_ID` 可覆盖）+ Cookie 同意条（同意后才加载 gtag，localStorage 存 `soniva_cookie_consent`）；③桌面端更新器事件 → `desktop_update_events`，建表已进 web 迁移链（`20261002000000`）。⚠️ 两通道上线前置：**生产 db push（本地链欠 6+1 个迁移）+ web 重新部署（生产停在 9-19，track 路由未上线）** |
 | Release 资产 | ✅ 最新 **v0.1.11**（2026-09-30，流水线自动发）；v0.1.2~v0.1.11 同库存档，公证/Gatekeeper 均通过 |
