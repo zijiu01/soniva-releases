@@ -20,7 +20,7 @@ export function SiteHeader(props: Props) {
   const t = shellCopy[locale];
   const nav = shellNavigation(site, "header", locale);
   return <header className="sticky top-0 z-[300] shrink-0 border-b border-border bg-background">
-    <div className="mx-auto flex h-14 max-w-[1200px] items-center gap-2 px-5 md:h-16 md:px-8">
+    <div className="site-rail flex h-14 items-center gap-2 md:h-16">
       <Link href={shellHref(site, "home", "/", "logo", locale)} className="soniva-brand flex shrink-0 items-center gap-1" aria-label={t.home}>
         <SonivaLogo animated /><span className="text-lg font-medium">Soniva</span>
       </Link>

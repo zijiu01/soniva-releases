@@ -8,12 +8,12 @@
 | 项 | 状态 |
 |---|---|
 | 仓库性质 | 公开分发仓库，只放展示层与文档 |
-| 五站改版第6批（2026-10-22） | 共用壳来自官网 site-shell，浏览器端读 .soniva.uk 语言/主题/同意Cookie；包下载补统一GA4芯片事件，保留原匿名后端计数。正文、资产与发版脚本未动；全局进度记官网 .agent/sites-revamp-progress.md；静态导出语言需水合后读取，跨站无闪烁/GA4后台未实测 |
-| 网站 | ✅ DevLog 两栏（shadcn 中性风）：Hero + 快速定位频率图（每天一颗方块、按年折叠、月份倒序）/搜索/最新发布包 ｜ 月度分组卡片流（**卡片示意图已停用**，回退图标块）；卡片点击新标签打开详情页；新增本地 /terms 使用条款页（照录官网 legal markdown）；文档照录桌面端仓库原始 md（展示层滤 emoji）；导航/页脚保持不动 |
+| 五站改版（2026-10-23） | 已接第6/10批本地实现：与官网相同的1600px轨道、20个深浅Token、字阶、交叉点、页头页脚；开发模式跨站走3001/3002，生产域名不变。静态导出语言仍需水合后读取；浏览器、GA4后台与跨站无闪烁未实测；全局追加记录见官网 .agent/sites-revamp-progress.md |
+| 网站 | ✅ 下载在上、日志在下：发布源驱动的版本/日期/芯片安装包，诚实的芯片检测和手动选择，非Mac转浏览器；三步安装、现有帮助/发布说明链接；搜索/年热图/全部日志功能保留并拓宽。页脚单条上分割线，不接宣传视频。类型/15项测试/体量/HTTP验证通过；未运行build或部署；本地3002按用户要求保持预览，1920/手机/深浅实际界面待浏览器复核 |
 | 匿名统计（2026-10-02） | ✅ ①下载点击 → `sendBeacon` POST web 生产 `/api/downloads/track`（契约在 web 仓库该路由顶部），落 web 库 `download_events` 表（9-23 已建，站点不直连 PostgREST——那张表只收服务端写入）；②GA4（复用主站 G-MY14R4KCP5，`NEXT_PUBLIC_GA_MEASUREMENT_ID` 可覆盖）+ Cookie 同意条（同意后才加载 gtag，localStorage 存 `soniva_cookie_consent`）；③桌面端更新器事件 → `desktop_update_events`，建表已进 web 迁移链（`20261002000000`）。⚠️ 两通道上线前置：**生产 db push（本地链欠 6+1 个迁移）+ web 重新部署（生产停在 9-19，track 路由未上线）** |
-| Release 资产 | ✅ 最新 **v0.1.11**（2026-09-30，流水线自动发）；v0.1.2~v0.1.11 同库存档，公证/Gatekeeper 均通过 |
+| Release 资产 | 页面当前读取公开发布记录中的 **v0.1.22**（2026-10-11，双架构）；本轮不修改安装包、发布元数据或流水线，不把记录中的签名/公证结果当成本轮重新安装验证 |
 | 页面数据 | `public/releases/*.md`（v0.1.2~v0.1.4 released，后续版本由自动发版脚本生成）+ `public/devlog/*.md` **真实开发日志 36 篇**（总览 1 + 按天日志，`scripts/gen-devlog.py` 随自动发版增量重生成）+ 桌面端原文档；卡片示意图已停用 |
-| 下载入口 | ✅ 已放开，指向 `github.com/zijiu01/soniva-releases/releases/download/v0.1.4/` 真实资产 |
+| 下载入口 | 首页与版本详情共用DownloadLink保留匿名计数及同意后GA4；从发布元数据生成GitHub Releases资产地址，不硬编码最新版本。Mac选择arm64/x64；不确定时明确默认Apple、不误判MacIntel；未手工触发真实下载统计 |
 | 自动发版 | ✅ `scripts/publish-release.sh` 一条命令（门禁：版本/产物/sha512/公证实测 → Release+页面+日志+push+ntfy/邮件通知）；2026-09-25 起基座封装 `pnpm dist:mac:ship`＝打包+自动发版一条命令，不依赖 AI 会话/常驻进程；部署=push 触发 GitHub Pages + Vercel Git 双通道；ntfy 频道在 `.env.local` 的 `NTFY_TOPIC` |
 | 自动更新 | ⬜ latest-mac.yml 随 Release 上传，端到端链路未实测；2026-10-02 起桌面端更新器四态事件匿名写 `desktop_update_events`（见上游仓库 update-telemetry.ts，同一张建表 SQL） |
 | 部署 | ✅ GitHub Pages 已启用（build_type=workflow）并部署成功：https://zijiu01.github.io/soniva-releases/ ；曾因 workflow 的 pnpm version 输入与 packageManager 字段冲突失败，已修复 |

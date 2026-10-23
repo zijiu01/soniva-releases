@@ -12,7 +12,7 @@ export function PackageList({ entries }: { entries: TimelineEntry[] }) {
   const releases = entries.filter((entry) => entry.kind === "release");
 
   return (
-    <div id="download" className="scroll-mt-24 rounded-xl border border-border bg-card p-4">
+    <div id="versions" className="scroll-mt-24 rounded-xl border border-border bg-card p-4">
       <p className="text-sm font-medium">{t("latestPackages")}</p>
       {releases.length === 0 ? (
         <p className="mt-3 text-sm text-muted-foreground">{t("homeEmpty")}</p>

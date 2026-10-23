@@ -1,0 +1,39 @@
+/* Avidya 2.1–2.5: neutral exhibition shell, not a campaign illustration style. */
+:root {
+  --section-gap: 72px;
+  --heading-gap: 28px;
+  --site-display: 36px;
+  --site-h1: 30px;
+  --site-h2: 24px;
+  --site-h3: 18px;
+  --site-body: 15px;
+  --site-body-lg: 16px;
+  --site-caption: 13px;
+}
+.site-display { font-size: var(--site-display); font-weight: 600; line-height: 1.1; letter-spacing: -.02em; text-wrap: balance; }
+.site-h1 { font-size: var(--site-h1); font-weight: 600; line-height: 1.15; letter-spacing: -.015em; text-wrap: balance; }
+.site-h2 { font-size: var(--site-h2); font-weight: 600; line-height: 1.25; letter-spacing: -.01em; text-wrap: balance; }
+.site-h3 { font-size: var(--site-h3); font-weight: 600; line-height: 1.4; }
+.site-body { font-size: var(--site-body); line-height: 1.7; }
+.site-lead { font-size: var(--site-body-lg); line-height: 1.7; }
+.site-caption { font-size: var(--site-caption); line-height: 1.6; }
+.site-eyebrow { font-size: 12px; font-weight: 500; line-height: 1.2; letter-spacing: .12em; text-transform: uppercase; }
+.home-section { border-bottom: 1px solid var(--border); background: var(--background); }
+.home-section[data-tone="canvas"] { background: var(--surface-canvas); --marketing-grid-surface: var(--surface-canvas); }
+.home-section .marketing-grid-frame { --marketing-grid-surface: var(--background); }
+.home-section[data-tone="canvas"] .marketing-grid-frame { --marketing-grid-surface: var(--surface-canvas); }
+.home-section-heading { margin-bottom: var(--heading-gap); }
+.home-step { border-top: 1px solid var(--border); padding-block: 20px; }
+.home-diagram { border: 1px solid var(--border); border-radius: 10px; background: var(--background); }
+.home-file-fallback { display: grid; place-content: center; gap: 12px; text-align: center; background: var(--surface-canvas); color: var(--muted-foreground); }
+.home-hero-window { width: 100%; min-width: 0; }
+.home-hero-window .sa-window { border: 1px solid var(--border); border-radius: 10px; box-shadow: none; }
+.model-stage { position: relative; aspect-ratio: 1.62; width: 100%; }
+.model-stage-centre { position: absolute; width: 36%; aspect-ratio: 1; left: 32%; top: 18%; }
+.model-stage-centre canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; }
+@media (min-width: 768px) {
+  :root { --section-gap: 120px; --heading-gap: 40px; --site-display: 60px; --site-h1: 44px; --site-h2: 32px; --site-h3: 20px; --site-body: 16px; --site-body-lg: 18px; --site-caption: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marketing-site *, .soniva-brand * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

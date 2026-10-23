@@ -28,7 +28,7 @@ export function SiteFooter(props: Props) {
     ] },
   ];
   return <footer className="border-t border-border bg-background">
-    <div className="mx-auto max-w-[1200px] px-5 py-12 md:px-8">
+    <div className="site-rail py-12">
       <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
         {columns.map((column) => <div key={column.title}>
           <p className="text-sm font-medium">{column.title}</p>

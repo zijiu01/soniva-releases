@@ -1,4 +1,5 @@
 import { withWebsiteLanguage } from "@/lib/website-language";
+import { marketingUrl, appUrl, downloadUrl, pluginUrl } from "@/lib/website-urls";
 export type ShellLocale = "zh-CN" | "en-US";
 export type ShellSite = "home" | "help" | "download" | "plugin";
 export type ShellSection = "product" | "pricing" | "download" | "help" | "plugin";
@@ -25,9 +26,9 @@ export const shellCopy = {
 };
 
 const origins = {
-  home: "https://www.soniva.uk", help: "https://www.soniva.uk",
-  download: "https://download.soniva.uk", plugin: "https://plugin.soniva.uk",
-  app: "https://app.soniva.uk",
+  home: marketingUrl, help: marketingUrl,
+  download: downloadUrl, plugin: pluginUrl,
+  app: appUrl,
 };
 
 export function shellHref(site: ShellSite, target: keyof typeof origins, path: string, position: string, locale?: ShellLocale) {

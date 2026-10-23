@@ -1,0 +1,19 @@
+/* One pixel geometry source for site + download; circles share the line centres. */
+:root { --site-max-width: 1600px; --grid-marker-size: 10px; --grid-marker-offset: calc(var(--grid-marker-size) / 2 + .5px); }
+.site-rail { width: 100%; max-width: var(--site-max-width); margin-inline: auto; padding-inline: 20px; }
+.marketing-grid-frame { --marketing-grid-surface: var(--background); position: relative; border-inline: 1px solid var(--border); }
+.marketing-grid-frame::before, .marketing-grid-frame::after {
+  position: absolute; z-index: 10; pointer-events: none; content: "";
+  left: calc(-1 * var(--grid-marker-offset)); right: calc(-1 * var(--grid-marker-offset)); height: var(--grid-marker-size);
+  background: radial-gradient(circle, var(--marketing-grid-surface) 0 2px, var(--border) 2px 3px, transparent 3.2px) left center / var(--grid-marker-size) var(--grid-marker-size) no-repeat,
+    radial-gradient(circle, var(--marketing-grid-surface) 0 2px, var(--border) 2px 3px, transparent 3.2px) right center / var(--grid-marker-size) var(--grid-marker-size) no-repeat;
+}
+.marketing-grid-frame::before { top: calc(-1 * var(--grid-marker-offset)); }
+.marketing-grid-frame::after { bottom: calc(-1 * var(--grid-marker-offset)); }
+/* The footer owns the final separator. Do not stack it with the last section. */
+.home-page [data-home-section="10"] { border-bottom: 0; }
+@media (min-width: 768px) { .site-rail { padding-inline: 32px; } }
+@media (max-width: 639px) {
+  .marketing-grid-frame { border-inline: 0; }
+  .marketing-grid-frame::before, .marketing-grid-frame::after { display: none; }
+}

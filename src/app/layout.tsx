@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 const themeScript = `(function(){try{var m=document.cookie.match(/(?:^|;\\s*)soniva_theme_mode=([^;]*)/);var t=m?decodeURIComponent(m[1]):localStorage.getItem('soniva-releases-theme');var d=t==='dark'||((!t||t==='system')&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);}catch(e){}})();`;
 
 export const metadata: Metadata = {
-  metadataBase: new URL(site.officialUrl),
+  metadataBase: new URL("https://download.soniva.uk"),
   title: {
     default: `${site.product} · 发布版本记录`,
     template: `%s · ${site.name}`,

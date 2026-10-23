@@ -11,7 +11,11 @@ const language = {};
 vm.runInNewContext(ts.transpileModule(fs.readFileSync(new URL("../src/lib/website-language.ts", import.meta.url), "utf8"), {
   compilerOptions: { module: ts.ModuleKind.CommonJS },
 }).outputText, { exports: language, URL });
-vm.runInNewContext(output, { exports: api, URL, require: () => language });
+const origins = {};
+vm.runInNewContext(ts.transpileModule(fs.readFileSync(new URL("../src/lib/website-urls.ts", import.meta.url), "utf8"), {
+  compilerOptions: { module: ts.ModuleKind.CommonJS },
+}).outputText, { exports: origins, process: { env: { NODE_ENV: "production" } } });
+vm.runInNewContext(output, { exports: api, URL, require: (name) => name.includes("website-urls") ? origins : language });
 
 test("all four presentation sites have the same five navigation items", () => {
   for (const site of ["home", "help", "download", "plugin"]) {
@@ -34,4 +38,9 @@ test("both languages cover every navigation and theme label", () => {
     for (const item of api.shellNavigation("home", "header")) assert.ok(api.shellCopy[locale][item.id]);
     for (const mode of ["light", "dark", "system"]) assert.ok(api.shellCopy[locale].theme[mode]);
   }
+});
+
+test("download site's own download action returns to package card", () => {
+  assert.equal(api.shellHref("download", "download", "/", "header"), "/#download");
+  assert.equal(api.shellHref("download", "download", "/#timeline", "footer"), "/#timeline");
 });

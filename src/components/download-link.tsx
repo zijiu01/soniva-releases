@@ -4,7 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { reportDownloadEvent } from "@/lib/analytics";
 import { useWebsiteLocale } from "@/hooks/use-website-locale";
 
-/** 带匿名下载计数的资产链接。目前全站唯一挂载点是 release-detail.tsx 的下载按钮；
+/** 带匿名下载计数的资产链接。首页下载卡片和 release-detail.tsx 共用；
  *  将来新增任何指向 GitHub Releases 资产的入口都必须走这里，裸 <a href> 会让
  *  site_download_events 静默漏数。 */
 export function DownloadLink({
