@@ -28,12 +28,12 @@ export function SiteFooter(props: Props) {
     ] },
   ];
   return <footer className="border-t border-border bg-background">
-    <div className="site-rail py-12">
+    <div className={`${site === "help" ? "help-footer-rail" : "site-rail marketing-grid-frame shell-grid-frame"} py-10`}>
       <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
         {columns.map((column) => <div key={column.title}>
           <p className="text-sm font-medium">{column.title}</p>
           <ul className="mt-4 space-y-1">{column.links.map((item) => <li key={item.href}>
-            <Link href={item.href} onClick={"download" in item && item.download ? () => onDownload("footer") : undefined}
+            <Link href={item.href} target={"download" in item && item.download && site !== "download" ? "_blank" : undefined} rel={"download" in item && item.download && site !== "download" ? "noopener noreferrer" : undefined} onClick={"download" in item && item.download ? () => onDownload("footer") : undefined}
               className="inline-flex min-h-11 items-center text-sm text-muted-foreground hover:text-foreground">{item.label}</Link>
           </li>)}</ul>
         </div>)}

@@ -5,11 +5,22 @@
 .marketing-grid-frame::before, .marketing-grid-frame::after {
   position: absolute; z-index: 10; pointer-events: none; content: "";
   left: calc(-1 * var(--grid-marker-offset)); right: calc(-1 * var(--grid-marker-offset)); height: var(--grid-marker-size);
-  background: radial-gradient(circle, var(--marketing-grid-surface) 0 2px, var(--border) 2px 3px, transparent 3.2px) left center / var(--grid-marker-size) var(--grid-marker-size) no-repeat,
-    radial-gradient(circle, var(--marketing-grid-surface) 0 2px, var(--border) 2px 3px, transparent 3.2px) right center / var(--grid-marker-size) var(--grid-marker-size) no-repeat;
+  background: radial-gradient(circle, transparent 0 2px, var(--border) 2px 3px, transparent 3.2px) left center / var(--grid-marker-size) var(--grid-marker-size) no-repeat,
+    radial-gradient(circle, transparent 0 2px, var(--border) 2px 3px, transparent 3.2px) right center / var(--grid-marker-size) var(--grid-marker-size) no-repeat,
+    linear-gradient(var(--grid-upper) 50%, var(--grid-lower) 50%) left center / var(--grid-marker-size) var(--grid-marker-size) no-repeat,
+    linear-gradient(var(--grid-upper) 50%, var(--grid-lower) 50%) right center / var(--grid-marker-size) var(--grid-marker-size) no-repeat;
+  mask-image: radial-gradient(circle 3.2px at 5px 50%, black 95%, transparent), radial-gradient(circle 3.2px at calc(100% - 5px) 50%, black 95%, transparent);
 }
-.marketing-grid-frame::before { top: calc(-1 * var(--grid-marker-offset)); }
-.marketing-grid-frame::after { bottom: calc(-1 * var(--grid-marker-offset)); }
+.marketing-grid-frame::before { top: calc(-1 * var(--grid-marker-offset)); --grid-upper: var(--grid-previous, var(--background)); --grid-lower: var(--marketing-grid-surface); }
+.marketing-grid-frame::after { bottom: calc(-1 * var(--grid-marker-offset)); --grid-upper: var(--marketing-grid-surface); --grid-lower: var(--grid-next, var(--background)); }
+/* Half of each masking disk belongs to each adjacent section, in light and dark. */
+.home-section { --grid-previous: var(--surface-canvas); --grid-next: var(--surface-canvas); }
+.home-section[data-tone="canvas"] { --grid-previous: var(--background); --grid-next: var(--background); }
+.home-page [data-home-section="01"], [data-download-hero] { --grid-previous: var(--background); }
+[data-download-timeline] { --grid-previous: var(--surface-canvas); }
+.shell-grid-frame::before, .shell-grid-frame::after { display: none; }
+.help-header-rail, .help-footer-rail { width: 100%; padding-inline: 20px; }
+@media (min-width: 768px) { .help-header-rail, .help-footer-rail { padding-inline: 24px; } }
 /* The footer owns the final separator. Do not stack it with the last section. */
 .home-page [data-home-section="10"] { border-bottom: 0; }
 @media (min-width: 768px) { .site-rail { padding-inline: 32px; } }
