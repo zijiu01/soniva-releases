@@ -14,8 +14,8 @@ export function DocDetail({ doc, bodies }: { doc: DocEntry; bodies: Record<Local
   const summary = locale === "zh-CN" ? doc.summaryZh : doc.summaryEn;
 
   return (
-    <article className="marketing-grid-frame mx-auto max-w-4xl px-5 sm:px-8">
-      <div className="section-pad">
+    <article className="site-rail marketing-grid-frame">
+      <div className="section-pad mx-auto max-w-4xl">
         <Link href="/docs" className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline">
           ← {t("docsTitle")}
         </Link>

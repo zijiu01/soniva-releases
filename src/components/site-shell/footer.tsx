@@ -13,13 +13,13 @@ export function SiteFooter(props: Props) {
   const link = (target: "home" | "help" | "download" | "plugin" | "app", path: string) => shellHref(site, target, path, "footer", locale);
   const columns = [
     { title: t.product, links: [
-      { label: t.desktop, href: link("download", "/"), download: true },
-      { label: t.browser, href: link("app", "/") }, { label: t.plugin, href: link("plugin", "/") },
+      { label: t.desktop, href: link("download", "/"), download: true, external: true },
+      { label: t.browser, href: link("app", "/") }, { label: t.plugin, href: link("plugin", "/"), external: true },
       { label: t.pricing, href: link("home", "/pricing") },
     ] },
     { title: t.helpColumn, links: [
       { label: t.help, href: link("help", "/help") },
-      { label: t.changelog, href: link("download", "/#timeline") },
+      { label: t.changelog, href: link("download", "/#timeline"), external: true },
       { label: t.contact, href: "mailto:soniva.cde@gmail.com" },
     ] },
     { title: t.termsColumn, links: [
@@ -33,7 +33,7 @@ export function SiteFooter(props: Props) {
         {columns.map((column) => <div key={column.title}>
           <p className="text-sm font-medium">{column.title}</p>
           <ul className="mt-4 space-y-1">{column.links.map((item) => <li key={item.href}>
-            <Link href={item.href} target={"download" in item && item.download && site !== "download" ? "_blank" : undefined} rel={"download" in item && item.download && site !== "download" ? "noopener noreferrer" : undefined} onClick={"download" in item && item.download ? () => onDownload("footer") : undefined}
+            <Link href={item.href} target={"external" in item && item.external ? "_blank" : undefined} rel={"external" in item && item.external ? "noopener noreferrer" : undefined} onClick={"download" in item && item.download ? () => onDownload("footer") : undefined}
               className="inline-flex min-h-11 items-center text-sm text-muted-foreground hover:text-foreground">{item.label}</Link>
           </li>)}</ul>
         </div>)}

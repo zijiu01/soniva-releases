@@ -20,7 +20,7 @@ export function InstallSteps() {
       </ol>
       <div className="mt-10 flex flex-wrap gap-x-8 gap-y-4 text-sm">
         <Link className="inline-flex items-center gap-1 hover:text-muted-foreground" href="/docs/first-launch/">{t("nextHelp")}<ArrowUpRight className="size-4" /></Link>
-        <Link className="inline-flex items-center gap-1 hover:text-muted-foreground" href={`${pluginUrl}/?from=download-install`}>{t("extension")}<ArrowUpRight className="size-4" /></Link>
+        <Link target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:text-muted-foreground" href={`${pluginUrl}/?from=download-install`}>{t("extension")}<ArrowUpRight className="size-4" /></Link>
       </div>
     </div>
   </section>;

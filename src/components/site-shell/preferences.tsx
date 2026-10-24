@@ -3,6 +3,7 @@
 import { Languages, Monitor, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { shellCopy, type ShellLocale } from "./copy";
+import { CookieSettingsButton } from "./cookie-settings-button";
 
 export type PreferenceProps = {
   locale: ShellLocale;
@@ -19,6 +20,7 @@ export function ShellPreferences({ locale, themeMode, onLocaleChange, onThemeCha
     <Button variant="ghost" className="h-11 gap-1 px-2" onClick={onLocaleChange} aria-label={t.language}>
       <Languages className="size-4" /><span>{locale === "zh-CN" ? "EN" : "中文"}</span>
     </Button>
+    <CookieSettingsButton locale={locale} />
     <Button variant="ghost" className="size-11" onClick={onThemeChange} aria-label={t.theme[next]} title={t.theme[next]}>
       <Icon className="size-4" />
     </Button>

@@ -19,9 +19,9 @@
 .site-caption { font-size: var(--site-caption); line-height: 1.6; }
 .site-eyebrow { font-size: 12px; font-weight: 500; line-height: 1.2; letter-spacing: .12em; text-transform: uppercase; }
 .home-section { border-bottom: 1px solid var(--border); background: var(--background); }
-.home-section[data-tone="canvas"] { background: var(--surface-canvas); --marketing-grid-surface: var(--surface-canvas); }
+.home-section[data-tone="canvas"] { background: var(--background); --marketing-grid-surface: var(--background); }
 .home-section .marketing-grid-frame { --marketing-grid-surface: var(--background); }
-.home-section[data-tone="canvas"] .marketing-grid-frame { --marketing-grid-surface: var(--surface-canvas); }
+.home-section[data-tone="canvas"] .marketing-grid-frame { --marketing-grid-surface: var(--background); }
 .home-section-heading { margin-bottom: var(--heading-gap); }
 .home-step { border-top: 1px solid var(--border); padding-block: 20px; }
 .home-diagram { border: 1px solid var(--border); border-radius: 10px; background: var(--background); }

@@ -57,9 +57,9 @@
   --destructive: oklch(0.577 0.245 27.325);
   /* 频率图专用蓝色梯度（GitHub contributions 风）。三档都要「看得出的蓝」，
      最浅一档也不允许退成灰色；仅供数据可视化使用。 */
-  --chart-1: oklch(0.8 0.11 250);
-  --chart-2: oklch(0.66 0.16 256);
-  --chart-3: oklch(0.52 0.21 262);
+  --chart-1: #E3DACA;
+  --chart-2: #B8A88C;
+  --chart-3: #3B3226;
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
@@ -73,9 +73,9 @@
 
 .dark {
   --destructive: oklch(0.704 0.191 22.216);
-  --chart-1: oklch(0.55 0.12 260);
-  --chart-2: oklch(0.68 0.15 256);
-  --chart-3: oklch(0.8 0.14 252);
+  --chart-1: #353026;
+  --chart-2: #7A6F5E;
+  --chart-3: #E9DDC6;
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);

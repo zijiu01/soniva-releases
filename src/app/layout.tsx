@@ -41,6 +41,8 @@ export const viewport: Viewport = {
   ],
 };
 
+import { GridJunctionOverlay } from "@/components/site-shell/grid-junction-overlay";
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
@@ -57,6 +59,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <main className="flex-1">{children}</main>
           <WebsiteFooter />
           <CookieConsent />
+          <GridJunctionOverlay />
         </WebsiteLocaleProvider>
       </body>
     </html>

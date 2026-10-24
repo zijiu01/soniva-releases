@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useWebsiteLocale } from "@/hooks/use-website-locale";
 import { siteCopy, useT } from "@/lib/i18n";
 import { daysInMonth, parseISODate } from "@/lib/date-format";
@@ -14,7 +15,7 @@ type Props = {
 
 type DayInfo = { count: number; entries: TimelineEntry[] };
 
-/** 「快速定位」：GitHub Contributions 风格频率图。每天一颗方块（空日灰色），
+/** 更新日历：每天一颗方块（空日灰色），
  *  有日志的按条数加深；每一年都是独立可折叠的区块，任意日期可点。 */
 export function YearHeatmap({ entries, onSelect }: Props) {
   const t = useT(siteCopy);
@@ -36,11 +37,11 @@ export function YearHeatmap({ entries, onSelect }: Props) {
           const open = expanded.includes(year);
           return (
             <div key={year} className="border-b border-border last:border-b-0">
-              <button
+              <Button variant="ghost"
                 type="button"
                 aria-expanded={open}
                 onClick={() => toggle(year)}
-                className="flex w-full items-center gap-1.5 py-2.5 text-sm text-foreground"
+                className="flex h-auto w-full items-center justify-start gap-1.5 px-0 py-2.5 text-sm text-foreground"
               >
                 <ChevronRight
                   className={`size-3.5 text-muted-foreground transition-transform ${open ? "rotate-90" : ""}`}
@@ -49,7 +50,7 @@ export function YearHeatmap({ entries, onSelect }: Props) {
                 <span className="ml-auto font-mono text-xs text-muted-foreground">
                   {yearEntryCount(entries, year)} {locale === "en-US" ? "entries" : "条"}
                 </span>
-              </button>
+              </Button>
               {open && (
                 <div className="grid grid-cols-3 gap-x-3 gap-y-4 pb-4 pt-1">
                   {/* 月份与年份同为倒序：12月在前、1月在后 */}
@@ -107,7 +108,7 @@ function MonthGrid({
             ? `${iso} · ${info.count} ${locale === "en-US" ? (info.count > 1 ? "entries" : "entry") : "条日志"}`
             : iso;
           return (
-            <button
+            <Button variant="ghost"
               key={iso}
               type="button"
               aria-label={tip}
@@ -116,7 +117,7 @@ function MonthGrid({
                 const target = info ? info.entries[0] : nearestEntry(days, iso);
                 if (target) onSelect(target);
               }}
-              className={`size-2 rounded-[2px] transition-transform hover:scale-125 ${
+              className={`size-2 min-w-0 rounded-[2px] p-0 transition-transform hover:scale-125 ${
                 info ? levelClass(info.count) : "bg-muted-foreground/20 hover:bg-muted-foreground/35"
               }`}
             />
@@ -127,7 +128,7 @@ function MonthGrid({
   );
 }
 
-/** GitHub 风格深浅：当日日志越多，蓝色越深（chart Token，数据可视化专用）。 */
+/** 纸墨色阶来自桌面 theme-palettes.css；深浅主题分别映射。 */
 function levelClass(count: number): string {
   if (count >= 3) return "bg-chart-3";
   if (count === 2) return "bg-chart-2";

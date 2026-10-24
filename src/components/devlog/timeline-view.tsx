@@ -43,7 +43,7 @@ export function TimelineView({ entries }: Props) {
           <p className="site-body mt-4 text-muted-foreground">{d("timelineLead")}</p>
         </div>
         <div className="grid items-start gap-10 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-16">
-          <div className="space-y-5 lg:sticky lg:top-20">
+          <div className="min-h-0 space-y-5 lg:sticky lg:top-20 lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto lg:overscroll-contain lg:pr-2">
             <div className="relative">
               <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input

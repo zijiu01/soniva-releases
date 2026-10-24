@@ -17,8 +17,8 @@ export function ReleaseDetail({ release, bodies }: { release: ReleaseEntry; bodi
   const summary = locale === "zh-CN" ? release.summaryZh : release.summaryEn;
 
   return (
-    <article className="marketing-grid-frame mx-auto max-w-4xl px-5 sm:px-8">
-      <div className="section-pad">
+    <article className="site-rail marketing-grid-frame">
+      <div className="section-pad mx-auto max-w-4xl">
         <Link href="/#timeline" className="text-sm text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline">
           ← {t("releaseBack")}
         </Link>

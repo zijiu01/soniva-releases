@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Script from "next/script";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { cookieSettingsEvent } from "./cookie-settings-button";
 import { useWebsiteLocale } from "@/hooks/use-website-locale";
 import { writeSharedCookie } from "@/lib/shared-domain-storage";
 import {
@@ -15,6 +16,11 @@ export function CookieConsent() {
   const { locale } = useWebsiteLocale();
   const [consent, setConsent] = useState<Consent>("unset");
   const [editing, setEditing] = useState(false);
+  useEffect(() => {
+    const open = () => setEditing(true);
+    window.addEventListener(cookieSettingsEvent, open);
+    return () => window.removeEventListener(cookieSettingsEvent, open);
+  }, []);
   const [ready, setReady] = useState(false);
   const pathname = usePathname();
   const copy = locale === "zh-CN"
@@ -64,9 +70,7 @@ export function CookieConsent() {
           <Button size="sm" onClick={() => choose("accepted")}>{copy.accept}</Button>
         </div>
       </aside>
-    ) : (
-      <Button variant="outline" size="sm" className="fixed bottom-3 left-3 z-[400]" onClick={() => setEditing(true)}>{copy.settings}</Button>
-    )}
+    ) : null}
     {consent === "accepted" && (
       <Script id="soniva-ga4" src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
         strategy="afterInteractive" onReady={() => setReady(initializeAnalytics())} />
