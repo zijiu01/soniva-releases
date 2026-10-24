@@ -16,14 +16,14 @@ const themeScript = `(function(){try{var m=document.cookie.match(/(?:^|;\\s*)son
 export const metadata: Metadata = {
   metadataBase: new URL("https://download.soniva.uk"),
   title: {
-    default: `${site.product} · 发布版本记录`,
+    default: `下载中心 · ${site.name}`,
     template: `%s · ${site.name}`,
   },
   description: site.description,
   keywords: ["Soniva", "桌面端", "下载", "发布记录", "版本时间线"],
   openGraph: {
     type: "website",
-    title: `${site.product} · 发布版本记录`,
+    title: `下载中心 · ${site.name}`,
     description: site.description,
     siteName: site.name,
     locale: "zh_CN",
@@ -41,7 +41,6 @@ export const viewport: Viewport = {
   ],
 };
 
-import { GridJunctionOverlay } from "@/components/site-shell/grid-junction-overlay";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -59,7 +58,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <main className="flex-1">{children}</main>
           <WebsiteFooter />
           <CookieConsent />
-          <GridJunctionOverlay />
         </WebsiteLocaleProvider>
       </body>
     </html>

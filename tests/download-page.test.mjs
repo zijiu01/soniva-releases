@@ -65,7 +65,9 @@ test("new download assembly uses published release data and preserves original i
 test("download geometry shares 1600px rails without duplicate markers or footer separator", () => {
   const frame = read("src/app/site-frame.css");
   assert.match(frame, /--site-max-width: 1600px/);
-  assert.match(frame, /\/ 2 \+ \.5px/);
+  assert.match(frame, /repeating-linear-gradient\(315deg/);
+  assert.doesNotMatch(read("src/app/layout.tsx"), /GridJunctionOverlay/);
+  assert.match(read("src/components/download/mac-download-card.tsx"), /RiAppleFill, RiWindowsFill/);
   const globals = read("src/app/globals.css");
   assert.match(globals, /@import "\.\/site-theme.css"/);
   assert.doesNotMatch(globals, /\.marketing-grid-frame::before|--foreground:/);

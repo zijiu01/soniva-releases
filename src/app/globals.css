@@ -166,6 +166,3 @@
 .marketing-footer-frame::after {
   display: none;
 }
-
-/* Keep older detail routes on the same vertical rhythm as the marketing site. */
-.section-pad-sm, .section-pad, .section-pad-lg { padding-block: var(--section-gap); }

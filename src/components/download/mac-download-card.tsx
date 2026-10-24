@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Apple, ArrowDownToLine, ArrowUpRight, Check } from "lucide-react";
+import { ArrowDownToLine, ArrowUpRight, Check } from "lucide-react";
+import { RiAppleFill, RiWindowsFill } from "@remixicon/react";
 import { DownloadLink } from "@/components/download-link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useT } from "@/lib/i18n";
@@ -33,8 +34,7 @@ export function MacDownloadCard({ release }: { release?: ReleaseEntry }) {
     (architecture === "arm64" ? /arm64|apple|silicon/i : /x64|x86|intel/i).test(`${item.id} ${item.arch}`));
 
   return <div id="download" data-download-card className="scroll-mt-24 rounded-xl border border-border bg-background p-6 md:p-10">
-    <Apple className="mb-6 size-7" aria-hidden />
-    <h2 className="site-h2">{t("cardTitle")}</h2>
+    <div className="flex items-center gap-3"><RiAppleFill className="size-7 shrink-0" aria-hidden /><h2 className="site-h2">{t("cardTitle")}</h2></div>
     <div className="my-6 grid grid-cols-2 gap-2" role="group" aria-label={t("cardTitle")}>
       {(["arm64", "x64"] as const).map((arch) => <Button key={arch} variant={architecture === arch ? "default" : "outline"}
         className="h-12" aria-pressed={architecture === arch} onClick={() => {
@@ -61,7 +61,9 @@ export function MacDownloadCard({ release }: { release?: ReleaseEntry }) {
         {release && <Link className="text-muted-foreground hover:text-foreground" href={`/releases/${release.version}/`}>{t("releaseNotes")}</Link>}
       </div>
       <p className="site-caption mt-4 text-muted-foreground">{t("packageNote")}</p>
-      <p className="site-caption text-muted-foreground">{t("windows")}</p>
+      <div className="mt-5 flex items-center gap-3 rounded-lg border border-border px-4 py-3 text-muted-foreground">
+        <RiWindowsFill className="size-5 shrink-0" aria-hidden /><p className="site-caption">{t("windows")}</p>
+      </div>
     </div>
   </div>;
 }

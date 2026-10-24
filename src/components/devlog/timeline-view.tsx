@@ -37,7 +37,7 @@ export function TimelineView({ entries }: Props) {
 
   return (
     <section data-download-timeline>
-      <div className="site-rail marketing-grid-frame section-pad">
+      <div className="site-rail marketing-grid-frame site-dotted-floor section-pad">
         <div className="home-section-heading">
           <h2 className="site-h2">{d("timelineTitle")}</h2>
           <p className="site-body mt-4 text-muted-foreground">{d("timelineLead")}</p>

@@ -23,6 +23,7 @@
 .home-section .marketing-grid-frame { --marketing-grid-surface: var(--background); }
 .home-section[data-tone="canvas"] .marketing-grid-frame { --marketing-grid-surface: var(--background); }
 .home-section-heading { margin-bottom: var(--heading-gap); }
+.section-pad-sm, .section-pad, .section-pad-lg { padding-block: var(--section-gap); }
 .home-step { border-top: 1px solid var(--border); padding-block: 20px; }
 .home-diagram { border: 1px solid var(--border); border-radius: 10px; background: var(--background); }
 .home-file-fallback { display: grid; place-content: center; gap: 12px; text-align: center; background: var(--surface-canvas); color: var(--muted-foreground); }
