@@ -6,7 +6,7 @@ import { getTimelineEntries } from "@/lib/content/timeline";
 import { getReleases } from "@/lib/content/releases";
 
 export const metadata: Metadata = {
-  title: "下载中心",
+  title: { absolute: "下载中心 · Soniva" },
   description: "下载 Soniva Mac 桌面端，选择 Apple 芯片或 Intel 安装包。查看安装指引、版本更新和真实开发记录。",
   alternates: { canonical: "https://download.soniva.uk/" },
   openGraph: { title: "下载中心 · Soniva", url: "https://download.soniva.uk/", description: "选择适合你的 Mac 安装包，三步开启本地素材库。" },
