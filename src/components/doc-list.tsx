@@ -9,8 +9,8 @@ export function DocList({ docs }: { docs: DocEntry[] }) {
   const { locale } = useWebsiteLocale();
 
   return (
-    <section className="marketing-grid-frame mx-auto max-w-4xl px-5 sm:px-8">
-      <div className="section-pad">
+    <section className="site-rail marketing-grid-frame site-dotted-floor">
+      <div className="section-pad mx-auto max-w-4xl">
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{t("docsTitle")}</h1>
         <p className="mt-4 text-sm leading-7 text-muted-foreground">{t("docsSubtitle")}</p>
 

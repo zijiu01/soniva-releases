@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useWebsiteLocale } from "@/hooks/use-website-locale";
 import { siteCopy, useT } from "@/lib/i18n";
 import { daysInMonth, parseISODate } from "@/lib/date-format";
@@ -30,7 +31,7 @@ export function YearHeatmap({ entries, onSelect }: Props) {
     setExpanded((prev) => (prev.includes(year) ? prev.filter((item) => item !== year) : [...prev, year]));
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4">
+    <TooltipProvider delay={150}><div className="rounded-xl border border-border bg-card p-4">
       <p className="text-sm font-medium">{t("quickLocate")}</p>
       <div className="mt-1">
         {years.map((year) => {
@@ -41,7 +42,7 @@ export function YearHeatmap({ entries, onSelect }: Props) {
                 type="button"
                 aria-expanded={open}
                 onClick={() => toggle(year)}
-                className="flex h-auto w-full items-center justify-start gap-1.5 px-0 py-2.5 text-sm text-foreground"
+                className="flex h-auto w-full items-center justify-start gap-1.5 px-2 py-2.5 text-sm text-foreground"
               >
                 <ChevronRight
                   className={`size-3.5 text-muted-foreground transition-transform ${open ? "rotate-90" : ""}`}
@@ -73,7 +74,7 @@ export function YearHeatmap({ entries, onSelect }: Props) {
           );
         })}
       </div>
-    </div>
+    </div></TooltipProvider>
   );
 }
 
@@ -99,7 +100,7 @@ function MonthGrid({
   return (
     <div>
       <p className="text-center text-[10px] leading-4 text-muted-foreground">{label}</p>
-      <div className="mt-1.5 grid grid-cols-7 gap-[3px]">
+      <div className="mt-1.5 grid grid-cols-7 gap-0.5">
         {cells.map((day, index) => {
           if (day === null) return <span key={`pad-${index}`} aria-hidden="true" className="size-2" />;
           const iso = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
@@ -108,11 +109,9 @@ function MonthGrid({
             ? `${iso} · ${info.count} ${locale === "en-US" ? (info.count > 1 ? "entries" : "entry") : "条日志"}`
             : iso;
           return (
-            <Button variant="ghost"
-              key={iso}
+            <Tooltip key={iso}><TooltipTrigger render={<Button variant="ghost"
               type="button"
               aria-label={tip}
-              title={tip}
               onClick={() => {
                 const target = info ? info.entries[0] : nearestEntry(days, iso);
                 if (target) onSelect(target);
@@ -120,7 +119,7 @@ function MonthGrid({
               className={`size-2 min-w-0 rounded-[2px] p-0 transition-transform hover:scale-125 ${
                 info ? levelClass(info.count) : "bg-muted-foreground/20 hover:bg-muted-foreground/35"
               }`}
-            />
+            />} /><TooltipContent>{tip}</TooltipContent></Tooltip>
           );
         })}
       </div>
