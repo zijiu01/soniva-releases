@@ -80,12 +80,22 @@
   项目环境变量里配置）。
 - **门禁**（任一不过即失败退出 + ntfy 通知，绝不带病上线）：
   版本号必须更新 / `out/` 三件齐全 / sha512 与 `latest-mac.yml` 一致 /
-  双 DMG 挂载实测 codesign + `spctl accepted` + asar 含渲染层。
+  双 DMG 挂载实测 codesign + `spctl accepted` + asar 含渲染层
+  （`--win` 补传模式跳过版本号与 Mac 门禁，只对 Windows 产物做 sha512 对账）。
 - **发布动作**：API 建 Release + 传双 DMG + `latest-mac.yml` → 生成
   `public/releases/<版本>.md`（中英）→ `scripts/gen-devlog.py` 增量重生成开发日志
   → `pnpm verify` + `build` → 提交进 SonivaSlots 宿主（显式前缀路径 + 暂存区防吞
   检查）→ `git subtree push` 前缀回公开仓库（直连失败自动走本地代理 7897）
   → 通知三通道：邮件（`.env.local` 填 `NOTIFY_EMAIL`，走本机 Mail.app 发信）+ ntfy.sh（频道在 `NTFY_TOPIC`，不入库）+ 本机系统通知。
+- **Windows 资产（2026-11-13 起，随发常态化）**：`out/` 里有 Windows 产物时随同一
+  Release 再传 4 资产——`Soniva-<版本>-x64-setup.exe`（自动更新走它）、它的
+  `.blockmap`（差量下载）、`-portable.exe`（免安装，自动更新不覆盖）、`latest.yml`
+  （electron-updater 轮询清单，缺了就 update-available → 404，同 Mac 那次 zip 404
+  事故的 Windows 版）。setup.exe 的 sha512 与 `latest.yml` 对账；portable 不在 yml
+  里，仅验存在。发布页自动带 Windows 下载条目，Release 说明自动写明未签名与
+  SmartScreen 应对。**Mac 已发、Windows 后补**：`bash scripts/publish-release.sh --win`
+  （0.1.25 首次用），跳过版本号门禁与 Mac 门禁，只补 Windows 资产 + 页面条目 +
+  Release 说明，幂等可重跑。Windows 包无证书不签名，SmartScreen 提示属预期。
 - 第 3 节的手动流程保留作为兜底；凭据用本机钥匙串 git 凭据（基座 `.env` 的旧
   GH_TOKEN 已失效，仅作历史参考）。
 - 终极形态（可选，未做）：desktop 仓库推 tag 触发 GitHub Actions 在云端构建 +
