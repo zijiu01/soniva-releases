@@ -74,7 +74,7 @@
   `dist:mac` 全流程 + 本脚本，打包完自动走门禁→发布→push→通知，不会再出现
   "打包完忘了推第二步"（0.1.4 曾因此滞留本地，且工作区提版被还原、脚本读
   0.1.3 空转；版本号已回填 0.1.4 落库）。路径可用 `SONIVA_RELEASES` 环境变量
-  覆盖，默认 `../../Releases/soniva-releases`。
+  覆盖，默认 `../../SonivaSlots/soniva-releases`（2026-11-12 起源码迁入该 monorepo）。
 - **部署链**：push main → GitHub Pages 自动部署；Vercel 项目已连 Git，
   push 同样自动触发 Vercel 生产部署（`NEXT_PUBLIC_GITHUB_REPO` 已在 Vercel
   项目环境变量里配置）。
@@ -83,7 +83,8 @@
   双 DMG 挂载实测 codesign + `spctl accepted` + asar 含渲染层。
 - **发布动作**：API 建 Release + 传双 DMG + `latest-mac.yml` → 生成
   `public/releases/<版本>.md`（中英）→ `scripts/gen-devlog.py` 增量重生成开发日志
-  → `pnpm verify` + `build` → 精准提交 → push（直连失败自动走本地代理 7897）
+  → `pnpm verify` + `build` → 提交进 SonivaSlots 宿主（显式前缀路径 + 暂存区防吞
+  检查）→ `git subtree push` 前缀回公开仓库（直连失败自动走本地代理 7897）
   → 通知三通道：邮件（`.env.local` 填 `NOTIFY_EMAIL`，走本机 Mail.app 发信）+ ntfy.sh（频道在 `NTFY_TOPIC`，不入库）+ 本机系统通知。
 - 第 3 节的手动流程保留作为兜底；凭据用本机钥匙串 git 凭据（基座 `.env` 的旧
   GH_TOKEN 已失效，仅作历史参考）。

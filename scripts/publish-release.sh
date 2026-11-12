@@ -11,7 +11,8 @@
 #
 # 发布动作：GitHub API 建 Release + 传 7 资产（双架构 zip+blockmap、双架构 DMG、
 #   latest-mac.yml）→ 生成 public/releases/<版本>.md（中英）
-#   → 增量重生成开发日志 → pnpm verify + build → 精准提交 → push（直连失败自动走本地代理）
+#   → 增量重生成开发日志 → pnpm verify + build → 提交进 SonivaSlots 宿主仓库
+#   → git subtree push 前缀回公开仓库（直连失败自动走本地代理）
 #   → ntfy.sh 远程通知 + 本机系统通知。
 # 凭据：本机钥匙串的 GitHub 凭据（git credential fill），不落盘不打印。
 set -uo pipefail
@@ -251,7 +252,7 @@ EOF
 ok "发布页数据就绪（public/releases/$VER.md）"
 python3 "$REPO_ROOT/scripts/gen-devlog.py" >/dev/null || die 5 "开发日志重生成失败"
 
-# ---------- 6. 构建验证 + 提交 + 推送 ----------
+# ---------- 6. 构建验证 ----------
 cd "$REPO_ROOT"
 # 2026-10-01：verify/build 的输出原来被整体吞掉，失败时只给一句"失败"——
 # 0.1.7~0.1.11 四个版本的发布页全卡在这看不出来原因。改成失败时先打出
@@ -261,19 +262,32 @@ pnpm verify >"$RUN_LOG" 2>&1 || { tail -n 40 "$RUN_LOG"; rm -f "$RUN_LOG"; die 5
 pnpm build >"$RUN_LOG" 2>&1 || { tail -n 40 "$RUN_LOG"; rm -f "$RUN_LOG"; die 5 "pnpm build 失败（上方为真实报错）"; }
 rm -f "$RUN_LOG"
 ok "typecheck/lint/build 全部通过"
-git add "public/releases/$VER.md" "public/releases/$VER.en.md" public/devlog/ scripts/ 2>/dev/null
-if git diff --cached --quiet; then
+# ---------- 7. 同步公开仓库（2026-11-12 起源码迁入 SonivaSlots monorepo）----------
+# 页面数据提交进宿主 SonivaSlots（显式前缀路径，不吞并行改动），再 git subtree push
+# 把 soniva-releases 前缀历史回推公开仓库触发 Pages+Vercel 部署——subtree split
+# 复现原提交 SHA，对公开仓库是无缝快进；独立克隆模式已随旧检出退役。
+TOP=$(git rev-parse --show-toplevel 2>/dev/null || echo "$REPO_ROOT")
+[ "$TOP" != "$REPO_ROOT" ] || die 6 "发版已迁入 SonivaSlots/soniva-releases（monorepo），旧独立检出已退役，请在 monorepo 检出内运行"
+FOREIGN=$(git -C "$TOP" diff --cached --name-only | grep -v '^soniva-releases/' || true)
+if [ -n "$FOREIGN" ]; then
+  echo "$FOREIGN" | head -5
+  die 6 "monorepo 暂存区有 soniva-releases 之外的改动（上方前 5 个），先让对应会话提交或退出暂存再发版"
+fi
+git -C "$TOP" add "soniva-releases/public/releases/$VER.md" "soniva-releases/public/releases/$VER.en.md" soniva-releases/public/devlog/ soniva-releases/scripts/ 2>/dev/null
+if git -C "$TOP" diff --cached --quiet; then
   info "没有需要提交的变更"
 else
-  git commit -m "feat(releases): 自动发版 v${VER}：Release 资产、发布页数据与当日开发日志
+  git -C "$TOP" commit -m "feat(releases): 自动发版 v${VER}：Release 资产、发布页数据与当日开发日志
 
 - scripts/publish-release.sh 全自动流水线产物：门禁（版本/产物/sha512/公证实测）全过后执行
 - 同步增量开发日志（scripts/gen-devlog.py）
 
 Co-Authored-By: GLM-5.3-Flash <noreply@z.ai>"
 fi
-git push origin main >/dev/null 2>&1 || git -c http.proxy="$PROXY" push origin main >/dev/null 2>&1 || die 6 "git push 失败（直连与代理都试了）"
-ok "已 push，GitHub Pages 将自动部署 $SITE_URL"
+git -C "$TOP" subtree push --prefix=soniva-releases "https://github.com/$GH_REPO.git" main >/dev/null 2>&1 \
+  || git -C "$TOP" -c http.proxy="$PROXY" subtree push --prefix=soniva-releases "https://github.com/$GH_REPO.git" main >/dev/null 2>&1 \
+  || die 6 "subtree push 公开仓库失败（直连与代理都试了）"
+ok "已 push 公开仓库，GitHub Pages 将自动部署 $SITE_URL"
 
 notify "Soniva v$VER 已发布" "Release 资产/发布页/日志已更新并推送，Pages 部署中。$SITE_URL"
 info "🎉 v$VER 发版完成"

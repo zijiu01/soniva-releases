@@ -12,9 +12,10 @@
 > 线上部署与 Release 资产仍在 GitHub 公开仓库 `zijiu01/soniva-releases`；把本目录的
 > 改动同步上去触发 Pages + Vercel 部署（在 SonivaSlots 仓库根执行）：
 > `git subtree push --prefix=soniva-releases https://github.com/zijiu01/soniva-releases.git main`
-> 注意：基座 `pnpm dist:mac:ship` 自动发版脚本 `scripts/publish-release.sh` 仍按"在
-> 本模块目录内直接 git push"的旧模型工作，迁到 monorepo 后其提交/推送段需要适配
-> （subtree push），未适配前不要从本目录跑自动发版。本文件其余规则继续有效。
+> 注意：自动发版（基座 `pnpm dist:mac:ship` → `scripts/publish-release.sh`）已适配
+> monorepo——页面数据提交进 SonivaSlots 宿主仓库（显式前缀路径 + 暂存区防吞检查），
+> 再 `git subtree push` 回公开仓库触发 Pages + Vercel 部署；脚本只能从 monorepo
+> 检出内运行，旧独立检出发版模式已退役。本文件其余规则继续有效。
 
 ## 1. 仓库性质与红线
 
