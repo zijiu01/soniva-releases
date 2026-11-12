@@ -317,30 +317,35 @@ gen_page() { # gen_page <语言后缀「.en」或空>
   if [ "$HAVE_WIN" = "1" ]; then
     win_zh="Windows x64 安装包与免安装便携版已一并上传（未签名，首次运行如遇 SmartScreen 提示选「更多信息 → 仍要运行」）。"
     win_en=" Windows x64 installer and portable build are attached as well (unsigned; SmartScreen may warn on first run)."
+    # Windows 两条用自己 stat 出来的体积（MB_WIN/MB_PORTABLE），不能复用 Mac 的
+    # size_arm/size_x64——0.1.25 补传时错填成 159MB，发布措辞必须与事实一致。
+    local size_win size_portable
+    size_win="约 ${MB_WIN} MB"; size_portable="约 ${MB_PORTABLE} MB"
+    [ "$suffix" = ".en" ] && { size_win="~${MB_WIN} MB"; size_portable="~${MB_PORTABLE} MB"; }
     if [ "$suffix" = ".en" ]; then
       downloads="$downloads
   - id: windows-x64
     platform: Windows
     arch: x64 installer
     filename: Soniva-$VER-x64-setup.exe
-    size: $size_x64
+    size: $size_win
   - id: windows-x64-portable
     platform: Windows
     arch: x64 portable
     filename: Soniva-$VER-x64-portable.exe
-    size: $size_x64"
+    size: $size_portable"
     else
       downloads="$downloads
   - id: windows-x64
     platform: Windows
     arch: x64 安装版
     filename: Soniva-$VER-x64-setup.exe
-    size: $size_arm
+    size: $size_win
   - id: windows-x64-portable
     platform: Windows
     arch: x64 免安装
     filename: Soniva-$VER-x64-portable.exe
-    size: $size_arm"
+    size: $size_portable"
     fi
   else
     win_zh=""; win_en=""
