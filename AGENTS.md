@@ -6,6 +6,16 @@
 > ② 用 GitHub Pages 部署一个官网风格的「发布版本记录」页面。
 > 在你执行任何改动前，**必须首先阅读本文件**，并按任务性质调阅 `.agent/` 下的专项规则。
 
+> **归属变更（2026-11-12）**：本站源码已通过 `git subtree` 并入插槽 monorepo
+> `SonivaSlots/soniva-releases/`（原独立检出的 59 个提交经合并提交第二父系完整保留；
+> 原本地路径 `/Volumes/500GB-BLUE/0-Project/Releases/soniva-releases` 已退役）。
+> 线上部署与 Release 资产仍在 GitHub 公开仓库 `zijiu01/soniva-releases`；把本目录的
+> 改动同步上去触发 Pages + Vercel 部署（在 SonivaSlots 仓库根执行）：
+> `git subtree push --prefix=soniva-releases https://github.com/zijiu01/soniva-releases.git main`
+> 注意：基座 `pnpm dist:mac:ship` 自动发版脚本 `scripts/publish-release.sh` 仍按"在
+> 本模块目录内直接 git push"的旧模型工作，迁到 monorepo 后其提交/推送段需要适配
+> （subtree push），未适配前不要从本目录跑自动发版。本文件其余规则继续有效。
+
 ## 1. 仓库性质与红线
 
 | 项 | 说明 |
