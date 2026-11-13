@@ -1,5 +1,10 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 export type MacArchitecture = "arm64" | "x64";
 export type DeviceHint = { mac: boolean; architecture: MacArchitecture; detected: boolean };
+export type DeviceKind = "unknown" | "mac" | "other";
 type NavigatorHint = {
   userAgent: string; platform: string; maxTouchPoints?: number;
   userAgentData?: { platform?: string; getHighEntropyValues: (hints: string[]) => Promise<{ architecture?: string }> };
@@ -17,4 +22,17 @@ export async function detectDevice(nav: NavigatorHint): Promise<DeviceHint> {
     if (/^(x86|x64|amd64)$/i.test(architecture ?? "")) return { mac, architecture: "x64", detected: true };
   } catch { /* Safari and privacy-restricted browsers retain the explicit fallback. */ }
   return fallback;
+}
+
+/** 下载卡片与安装步骤共用：SSR/首帧给 unknown（按 Mac 渲染），挂载后判定 mac / 其他。 */
+export function useDeviceKind(): DeviceKind {
+  const [kind, setKind] = useState<DeviceKind>("unknown");
+  useEffect(() => {
+    let active = true;
+    void detectDevice(navigator).then((result) => {
+      if (active) setKind(result.mac ? "mac" : "other");
+    });
+    return () => { active = false; };
+  }, []);
+  return kind;
 }

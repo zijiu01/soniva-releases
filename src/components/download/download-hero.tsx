@@ -3,7 +3,7 @@
 import type { ReleaseEntry } from "@/lib/content/types";
 import { useT } from "@/lib/i18n";
 import { downloadCopy } from "./copy";
-import { MacDownloadCard } from "./mac-download-card";
+import { DownloadCard } from "./download-card";
 
 export function DownloadHero({ release }: { release?: ReleaseEntry }) {
   const t = useT(downloadCopy);
@@ -20,7 +20,7 @@ export function DownloadHero({ release }: { release?: ReleaseEntry }) {
             <span>{t("mac")}</span>
           </div>
         </div>
-        <div className="lg:col-span-7"><MacDownloadCard release={release} /></div>
+        <div className="lg:col-span-7"><DownloadCard release={release} /></div>
       </div>
     </div>
   </section>;
